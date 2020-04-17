@@ -1,0 +1,36 @@
+{
+  "name": "@lunarr/vlc-player",
+  "version": "1.0.0",
+  "description": "VLC Player for React Native",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "vlc",
+    "player",
+    "android",
+    "ios",
+    "react",
+    "native",
+    "video",
+    "x265",
+    "mkv",
+    "vp9",
+    "avc1",
+    "h264"
+  ],
+  "author": "Sayem Chowdhury",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lunarr-app/vlc-player.git"
+  },
+  "license": "MIT",
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
+  },
+  "dependencies": {
+    "prop-types": "^15.7.2"
+  }
+}
