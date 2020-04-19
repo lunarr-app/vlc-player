@@ -29,7 +29,6 @@ class VideoEventEmitter {
     private static final String EVENT_SEEK = "onVideoSeek";
     private static final String EVENT_END = "onVideoEnd";
     private static final String EVENT_SNAPSHOT = "onSnapshot";
-    private static final String EVENT_ON_IS_PLAYING= "onIsPlaying";
     private static final String EVENT_ON_VIDEO_STATE_CHANGE = "onVideoStateChange";
 
     static final String[] Events = {
@@ -38,7 +37,6 @@ class VideoEventEmitter {
             EVENT_SEEK,
             EVENT_END,
             EVENT_SNAPSHOT,
-            EVENT_ON_IS_PLAYING,
             EVENT_ON_VIDEO_STATE_CHANGE
     };
 
@@ -49,7 +47,6 @@ class VideoEventEmitter {
             EVENT_SEEK,
             EVENT_END,
             EVENT_SNAPSHOT,
-            EVENT_ON_IS_PLAYING,
             EVENT_ON_VIDEO_STATE_CHANGE
     })
 
@@ -76,14 +73,10 @@ class VideoEventEmitter {
 
     /**
      * 视频进度改变回调
-     * @param currentPosition
-     * @param bufferedDuration
+     * @param progress
      */
-    void progressChanged(double currentPosition, double bufferedDuration) {
-        WritableMap event = Arguments.createMap();
-        event.putDouble("currentTime", currentPosition);
-        event.putDouble("duration", bufferedDuration);
-        receiveEvent(EVENT_PROGRESS, event);
+    void progressChanged(WritableMap progress) {
+        receiveEvent(EVENT_PROGRESS, progress);
     }
 
 
@@ -104,16 +97,6 @@ class VideoEventEmitter {
         WritableMap map = Arguments.createMap();
         map.putInt("isSuccess",result);
         receiveEvent(EVENT_SNAPSHOT, map);
-    }
-
-    /**
-     * 是否播放回调
-     * @param isPlaying
-     */
-    void isPlaying(boolean isPlaying){
-        WritableMap map = Arguments.createMap();
-        map.putBoolean("isPlaying",isPlaying);
-        receiveEvent(EVENT_ON_IS_PLAYING, map);
     }
 
     /**

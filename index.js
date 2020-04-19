@@ -69,9 +69,6 @@ export default class VLCPlayer extends React.PureComponent {
 
   _onVideoStateChange({ nativeEvent }) {
     switch (nativeEvent.type) {
-      case "TimeChanged":
-        this.props.onProgress && this.props.onProgress(nativeEvent);
-        break;
       case "Opening":
         this.props.onLoad && this.props.onLoad(nativeEvent);
         break;

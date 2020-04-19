@@ -14,7 +14,6 @@
 @property (nonatomic, copy) RCTDirectEventBlock onVideoOpen;
 @property (nonatomic, copy) RCTDirectEventBlock onVideoLoadStart;
 @property (nonatomic, copy) RCTDirectEventBlock onSnapshot;
-@property (nonatomic, copy) RCTDirectEventBlock onIsPlaying;
 @property (nonatomic, copy) RCTDirectEventBlock onVideoStateChange;
 
 

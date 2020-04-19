@@ -265,7 +265,8 @@ static NSString *const playbackRate = @"rate";
 
             BOOL isPlaying = _player.isPlaying;
             BOOL hasVideoOut = _player.hasVideoOut;
-            /*NSInteger numberOfReadBytesOnInput = _player.media.numberOfReadBytesOnInput;
+            /*
+            NSInteger numberOfReadBytesOnInput = _player.media.numberOfReadBytesOnInput;
             NSInteger numberOfPlayedAudioBuffers =  _player.media.numberOfPlayedAudioBuffers;
             NSInteger numberOfSentBytes = _player.media.numberOfSentBytes;
             NSInteger numberOfReadBytesOnDemux =  _player.media.numberOfReadBytesOnDemux;
@@ -273,20 +274,7 @@ static NSString *const playbackRate = @"rate";
             NSInteger numberOfCorruptedDataPackets =  _player.media.numberOfCorruptedDataPackets;
             NSInteger numberOfDisplayedPictures =  _player.media.numberOfDisplayedPictures;
             NSInteger numberOfDecodedVideoBlocks =  _player.media.numberOfDecodedVideoBlocks;
-          */
-            /*self.onIsPlaying(@{
-                               @"target": self.reactTag,
-                               @"isPlaying": [NSNumber numberWithBool: isPlaying],
-                               @"numberOfReadBytesOnInput":[NSNumber numberWithInteger:numberOfReadBytesOnInput],
-                               @"numberOfPlayedAudioBuffers":[NSNumber numberWithInteger:numberOfPlayedAudioBuffers],
-                               @"numberOfSentBytes":[NSNumber numberWithInteger:numberOfSentBytes],
-                               @"numberOfReadBytesOnDemux":[NSNumber numberWithInteger:numberOfReadBytesOnDemux],
-                               @"numberOfSentPackets":[NSNumber numberWithInteger:numberOfSentPackets],
-                               @"numberOfCorruptedDataPackets":[NSNumber numberWithInteger:numberOfCorruptedDataPackets],
-                               @"numberOfDisplayedPictures":[NSNumber numberWithInteger:numberOfDisplayedPictures],
-                               @"numberOfDecodedVideoBlocks":[NSNumber numberWithInteger:numberOfDecodedVideoBlocks],
-                               });
-             */
+            */
             VLCMediaPlayerState state = _player.state;
             CGSize videoSize =  _player.videoSize;
             int height = videoSize.height;

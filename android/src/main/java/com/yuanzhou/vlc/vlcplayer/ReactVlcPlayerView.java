@@ -204,20 +204,17 @@ class ReactVlcPlayerView extends TextureView implements
      * 播放过程中的时间事件监听
      */
     private MediaPlayer.EventListener mPlayerListener = new MediaPlayer.EventListener(){
-        long currentTime = 0;
-        long totalLength = 0;
         @Override
         public void onEvent(MediaPlayer.Event event) {
-            boolean isPlaying = mMediaPlayer.isPlaying();
-            currentTime = mMediaPlayer.getTime();
-            float position = mMediaPlayer.getPosition();
-            totalLength = mMediaPlayer.getLength();
             WritableMap map = Arguments.createMap();
-            map.putBoolean("isPlaying",isPlaying);
-            map.putDouble("position",position);
-            map.putDouble("currentTime",currentTime);
-            map.putDouble("duration",totalLength);
+            // float position = mMediaPlayer.getPosition();
+            // map.putDouble("position",position);
             switch (event.type) {
+              case MediaPlayer.Event.TimeChanged:
+                  map.putDouble("currentTime",mMediaPlayer.getTime());
+                  map.putDouble("duration",mMediaPlayer.getLength());
+                  eventEmitter.progressChanged(map);
+                  break;
                 case MediaPlayer.Event.EndReached:
                     map.putString("type","Ended");
                     eventEmitter.onVideoStateChange(map);
@@ -228,6 +225,8 @@ class ReactVlcPlayerView extends TextureView implements
                     break;
                 case MediaPlayer.Event.Opening:
                     map.putString("type","Opening");
+                    map.putDouble("currentTime",mMediaPlayer.getTime());
+                    map.putDouble("duration",mMediaPlayer.getLength());
                     eventEmitter.onVideoStateChange(map);
                     break;
                 case MediaPlayer.Event.Paused:
@@ -247,19 +246,11 @@ class ReactVlcPlayerView extends TextureView implements
                     map.putString("type","Error");
                     eventEmitter.onVideoStateChange(map);
                     break;
-                case MediaPlayer.Event.TimeChanged:
-                    map.putString("type","TimeChanged");
-                    eventEmitter.onVideoStateChange(map);
-                    /*currentTime = mMediaPlayer.getTime();
-                    totalLength = mMediaPlayer.getLength();
-                    eventEmitter.progressChanged(currentTime, totalLength);*/
-                    break;
                 default:
                     map.putString("type",event.type+"");
                     eventEmitter.onVideoStateChange(map);
                     break;
             }
-            eventEmitter.isPlaying(mMediaPlayer.isPlaying());
         }
     };
 
