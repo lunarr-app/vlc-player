@@ -207,7 +207,7 @@ static NSString *const playbackRate = @"rate";
             if(self.onVideoLoadStart){
                 self.onVideoLoadStart(@{
                                        @"target": self.reactTag
-                                       });
+                                     });
             }
         }
     }
@@ -236,7 +236,7 @@ static NSString *const playbackRate = @"rate";
                               @"isPlaying": [NSNumber numberWithBool: isPlaying],
                               @"hasVideoOut": [NSNumber numberWithBool: hasVideoOut],
                               @"type": @"mediaMetaDataDidChange",
-                              });
+                            });
 }
 
 - (void)mediaDidFinishParsing:(VLCMedia *)aMedia
@@ -249,7 +249,7 @@ static NSString *const playbackRate = @"rate";
                               @"isPlaying": [NSNumber numberWithBool: isPlaying],
                               @"hasVideoOut": [NSNumber numberWithBool: hasVideoOut],
                               @"type": @"mediaDidFinishParsing",
-                              });
+                            });
     //NSLog(@"readBytes %zd", readBytes);
 }
 
@@ -281,53 +281,53 @@ static NSString *const playbackRate = @"rate";
                                               @"type": @"Opening",
                                               @"currentTime": [NSNumber numberWithInt:[[_player time] intValue]],
                                               @"duration": [NSNumber numberWithInt:[_player.media.length intValue]],
-                                              });
+                                            });
                     break;
                 case VLCMediaPlayerStatePaused:
                     _paused = YES;
                     self.onVideoStateChange(@{
                                               @"target": self.reactTag,
                                               @"type": @"Paused",
-                                              });
+                                            });
                     break;
                 case VLCMediaPlayerStateStopped:
                     self.onVideoStateChange(@{
                                               @"target": self.reactTag,
                                               @"type": @"Stoped",
-                                              });
+                                            });
                     break;
                 case VLCMediaPlayerStateBuffering:
                     self.onVideoStateChange(@{
                                               @"target": self.reactTag,
                                               @"isBuffering": [NSNumber numberWithBool: !_player.isPlaying],
                                               @"type": @"Buffering",
-                                              });
+                                            });
                     break;
                 case VLCMediaPlayerStatePlaying:
                     _paused = NO;
                     self.onVideoStateChange(@{
                                               @"target": self.reactTag,
                                               @"type": @"Playing",
-                                              });
+                                            });
                     break;
                 case VLCMediaPlayerStateESAdded:
                     self.onVideoStateChange(@{
                                               @"target": self.reactTag,
                                               @"type": @"ESAdded",
-                                              });
+                                            });
                     break;
                 case VLCMediaPlayerStateEnded:
                     NSLog(@"VLCMediaPlayerStateEnded %i",1);
                     self.onVideoStateChange(@{
                                               @"target": self.reactTag,
                                               @"type": @"Ended",
-                                              });
+                                            });
                     break;
                 case VLCMediaPlayerStateError:
                     self.onVideoStateChange(@{
                                               @"target": self.reactTag,
                                               @"type": @"Error",
-                                              });
+                                            });
                     [self _release];
                     break;
             }
@@ -348,7 +348,7 @@ static NSString *const playbackRate = @"rate";
                                        @"target": self.reactTag,
                                        @"currentTime": [NSNumber numberWithInt:currentTime],
                                        @"duration": [NSNumber numberWithInt:duration],
-                                       });
+                                     });
             }
         }
     }
