@@ -42,6 +42,7 @@ RCT_EXPORT_VIEW_PROPERTY(snapshotPath, NSString);
  */
 RCT_EXPORT_VIEW_PROPERTY(onVideoLoadStart, RCTDirectEventBlock);
 RCT_EXPORT_VIEW_PROPERTY(onVideoProgress, RCTDirectEventBlock);
+RCT_EXPORT_VIEW_PROPERTY(onVideoSeek, RCTDirectEventBlock);
 RCT_EXPORT_VIEW_PROPERTY(onSnapshot, RCTDirectEventBlock);
 RCT_EXPORT_VIEW_PROPERTY(onVideoStateChange, RCTDirectEventBlock);
 
