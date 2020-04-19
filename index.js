@@ -11,11 +11,9 @@ export default class VLCPlayer extends React.PureComponent {
     this.resume = this.resume.bind(this);
     this.play = this.play.bind(this);
     this.snapshot = this.snapshot.bind(this);
-    this._assignRoot = this._assignRoot.bind(this);
     this._onProgress = this._onProgress.bind(this);
     this._onLoadStart = this._onLoadStart.bind(this);
     this._onSnapshot = this._onSnapshot.bind(this);
-    this._onIsPlaying = this._onIsPlaying.bind(this);
     this._onVideoStateChange = this._onVideoStateChange.bind(this);
     this.clear = this.clear.bind(this);
     this.changeVideoAspectRatio = this.changeVideoAspectRatio.bind(this);
@@ -23,11 +21,13 @@ export default class VLCPlayer extends React.PureComponent {
 
   static defaultProps = {
     autoplay: true,
-    progressUpdateInterval: 250
+    initType: 1,
+    initOptions: [],
+    style: {}
   };
 
   setNativeProps(nativeProps) {
-    this._root.setNativeProps(nativeProps);
+    this._video.setNativeProps(nativeProps);
   }
 
   clear() {
@@ -61,10 +61,6 @@ export default class VLCPlayer extends React.PureComponent {
 
   snapshot(path) {
     this.setNativeProps({ snapshotPath: path });
-  }
-
-  _assignRoot(component) {
-    this._root = component;
   }
 
   _onVideoStateChange({ nativeEvent }) {
@@ -102,12 +98,6 @@ export default class VLCPlayer extends React.PureComponent {
     }
   }
 
-  _onIsPlaying(event) {
-    if (this.props.onIsPlaying) {
-      this.props.onIsPlaying(event.nativeEvent);
-    }
-  }
-
   _onSnapshot(event) {
     if (this.props.onSnapshot) {
       this.props.onSnapshot(event.nativeEvent);
@@ -140,7 +130,7 @@ export default class VLCPlayer extends React.PureComponent {
       }
       source.mediaOptions = mediaOptionsList;
     }
-    source.initOptions = this.props.initOptions || [];
+    source.initOptions = this.props.initOptions;
     source.isNetwork = isNetwork;
     source.autoplay = this.props.autoplay;
     if (
@@ -150,26 +140,28 @@ export default class VLCPlayer extends React.PureComponent {
       source.hwDecoderEnabled = this.props.hwDecoderEnabled;
       source.hwDecoderForced = this.props.hwDecoderForced;
     }
-    if (this.props.initType) {
-      source.initType = this.props.initType;
-    } else {
-      source.initType = 1;
-    }
+    source.initType = this.props.initType;
 
     //repeat the input media
     //source.initOptions.push('--input-repeat=1000');
-    const nativeProps = Object.assign({}, this.props);
-    Object.assign(nativeProps, {
-      style: [styles.base, nativeProps.style],
-      source: source,
+    const nativeProps = {
+      ...this.props,
+      source,
+      style: [styles.base, this.props.style],
       onVideoLoadStart: this._onLoadStart,
       onVideoProgress: this._onProgress,
       onVideoStateChange: this._onVideoStateChange,
-      onSnapshot: this._onSnapshot,
-      onIsPlaying: this._onIsPlaying
-    });
+      onSnapshot: this._onSnapshot
+    };
 
-    return <Player ref={this._assignRoot} {...nativeProps} />;
+    return (
+      <Player
+        ref={ref => {
+          this._video = ref;
+        }}
+        {...nativeProps}
+      />
+    );
   }
 }
 
@@ -198,7 +190,6 @@ VLCPlayer.propTypes = {
   onVideoStateChange: PropTypes.func,
   onVideoProgress: PropTypes.func,
   onSnapshot: PropTypes.func,
-  onIsPlaying: PropTypes.func,
   onOpen: PropTypes.func,
   onLoadStart: PropTypes.func,
 
