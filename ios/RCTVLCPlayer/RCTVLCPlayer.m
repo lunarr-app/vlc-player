@@ -276,14 +276,11 @@ static NSString *const playbackRate = @"rate";
             VLCMediaPlayerState state = _player.state;
             switch (state) {
                 case VLCMediaPlayerStateOpening:
-                    int currentTime  = [[_player time] intValue];
-                    int duration     = [_player.media.length intValue];
-
                     self.onVideoStateChange(@{
                                               @"target": self.reactTag,
                                               @"type": @"Opening",
-                                              @"currentTime": [NSNumber numberWithInt:currentTime],
-                                              @"duration": [NSNumber numberWithInt:duration],
+                                              @"currentTime": [NSNumber numberWithInt:[[_player time] intValue]],
+                                              @"duration": [NSNumber numberWithInt:[_player.media.length intValue]],
                                               });
                     break;
                 case VLCMediaPlayerStatePaused:
@@ -350,7 +347,7 @@ static NSString *const playbackRate = @"rate";
                 self.onVideoProgress(@{
                                        @"target": self.reactTag,
                                        @"currentTime": [NSNumber numberWithInt:currentTime],
-                                       @"duration":[NSNumber numberWithInt:duration],
+                                       @"duration": [NSNumber numberWithInt:duration],
                                        });
             }
         }
