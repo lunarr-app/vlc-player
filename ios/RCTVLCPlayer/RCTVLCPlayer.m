@@ -280,7 +280,7 @@ static NSString *const playbackRate = @"rate";
                                               @"target": self.reactTag,
                                               @"type": @"Opening",
                                               @"currentTime": [NSNumber numberWithInt:[[_player time] intValue]],
-                                              @"duration": [NSNumber numberWithInt:[_player.media.length intValue]],
+                                              @"duration": [NSNumber numberWithInt:[_player.media.length intValue]]
                                             });
                     break;
                 case VLCMediaPlayerStatePaused:
@@ -412,19 +412,10 @@ static NSString *const playbackRate = @"rate";
 //audio  -----> end
 
 
--(void)setSeek:(float)pos
-{
-    if(_player != nil && [_player isSeekable]){
-        if(pos>=0 && pos <= 1){
-            [_player setPosition:pos];
-        }
-    }
-}
-
 -(void)setSeekTime:(int)time{
     if(_player){
-         VLCTime *time = [VLCTime timeWithInt:(time)];
-        [_player setTime:time];
+        float ms = time * 1000;
+        [_player setTime:[VLCTime timeWithInt:ms]];
     }
 }
 

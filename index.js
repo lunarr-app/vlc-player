@@ -35,7 +35,7 @@ export default class VLCPlayer extends React.PureComponent {
   }
 
   seek(timeSec) {
-    this.setNativeProps({ seek: timeSec });
+    this.setNativeProps({ seek: timeSec, seekTime: timeSec });
     this.props.onSeek && this.props.onSeek({ currentTime: timeSec });
   }
 
