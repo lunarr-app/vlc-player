@@ -73,13 +73,13 @@ export default class VLCPlayer extends React.PureComponent {
         this.props.onLoad && this.props.onLoad(nativeEvent);
         break;
       case "Stopped":
-        this.props.onError && this.props.onError(nativeEvent);
+        this.props.onStopped && this.props.onStopped(nativeEvent);
         break;
       case "Ended":
         this.props.onEnd && this.props.onEnd(nativeEvent);
         break;
       case "Buffering":
-        this.props.onBuffering && this.props.onBuffering(nativeEvent);
+        this.props.onBuffer && this.props.onBuffer(nativeEvent);
         break;
       case "Error":
         this.props.onError && this.props.onError(nativeEvent);
@@ -208,10 +208,9 @@ VLCPlayer.propTypes = {
   snapshot: PropTypes.func,
   onError: PropTypes.func,
   onProgress: PropTypes.func,
-  onEnded: PropTypes.func,
+  onBuffer: PropTypes.func,
+  onEnd: PropTypes.func,
   onStopped: PropTypes.func,
-  onPlaying: PropTypes.func,
-  onPaused: PropTypes.func,
 
   /* Required by react-native */
   scaleX: PropTypes.number,
