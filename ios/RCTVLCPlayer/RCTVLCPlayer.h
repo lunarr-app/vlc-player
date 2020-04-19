@@ -8,7 +8,7 @@
 @property (nonatomic, copy) RCTDirectEventBlock onVideoPaused;
 @property (nonatomic, copy) RCTDirectEventBlock onVideoStopped;
 @property (nonatomic, copy) RCTDirectEventBlock onVideoBuffering;
-@property (nonatomic, copy) RCTDirectEventBlock onVideoPlaying;
+@property (nonatomic, copy) RCTDirectEventBlock onVideoSeek;
 @property (nonatomic, copy) RCTDirectEventBlock onVideoEnded;
 @property (nonatomic, copy) RCTDirectEventBlock onVideoError;
 @property (nonatomic, copy) RCTDirectEventBlock onVideoOpen;

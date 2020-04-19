@@ -416,6 +416,14 @@ static NSString *const playbackRate = @"rate";
     if(_player){
         float ms = time * 1000;
         [_player setTime:[VLCTime timeWithInt:ms]];
+
+        int currentTime  = [[_player time] intValue];
+        int duration     = [_player.media.length intValue];
+        self.onVideoSeek(@{
+                               @"target": self.reactTag,
+                               @"currentTime": [NSNumber numberWithInt:currentTime],
+                               @"duration": [NSNumber numberWithInt:duration],
+                             });
     }
 }
 

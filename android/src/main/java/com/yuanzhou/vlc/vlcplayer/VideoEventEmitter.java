@@ -79,6 +79,14 @@ class VideoEventEmitter {
         receiveEvent(EVENT_PROGRESS, progress);
     }
 
+    /**
+     * 视频进度改变回调
+     * @param progress
+     */
+    void onVideoSeek(WritableMap progress) {
+        receiveEvent(EVENT_SEEK, progress);
+    }
+
 
     void error(String errorString, Exception exception) {
         WritableMap error = Arguments.createMap();

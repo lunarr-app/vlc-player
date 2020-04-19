@@ -425,6 +425,11 @@ class ReactVlcPlayerView extends TextureView implements
     public void seekTo(long time) {
         if(mMediaPlayer != null){
             mMediaPlayer.setTime(time);
+
+            WritableMap map = Arguments.createMap();
+            map.putDouble("currentTime",mMediaPlayer.getTime());
+            map.putDouble("duration",mMediaPlayer.getLength());
+            eventEmitter.onVideoSeek(map);
         }
     }
 

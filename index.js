@@ -35,8 +35,11 @@ export default class VLCPlayer extends React.PureComponent {
   }
 
   seek(timeSec) {
-    this.setNativeProps({ seek: timeSec, seekTime: timeSec });
-    this.props.onSeek && this.props.onSeek({ currentTime: timeSec });
+    if (Platform.OS === "ios") {
+      this.setNativeProps({ seekTime: timeSec });
+    } else {
+      this.setNativeProps({ seek: timeSec });
+    }
   }
 
   autoAspectRatio(isAuto) {
