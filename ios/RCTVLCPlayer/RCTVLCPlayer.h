@@ -16,8 +16,6 @@
 @property (nonatomic, copy) RCTDirectEventBlock onSnapshot;
 @property (nonatomic, copy) RCTDirectEventBlock onVideoStateChange;
 
-
-
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher NS_DESIGNATED_INITIALIZER;
 
 @end

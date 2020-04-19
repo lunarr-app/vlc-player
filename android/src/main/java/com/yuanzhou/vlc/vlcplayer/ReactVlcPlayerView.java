@@ -235,6 +235,7 @@ class ReactVlcPlayerView extends TextureView implements
                     break;
                 case MediaPlayer.Event.Buffering:
                     map.putDouble("bufferRate",event.getBuffering());
+                    map.putBoolean("isBuffering",!mMediaPlayer.isPlaying());
                     map.putString("type","Buffering");
                     eventEmitter.onVideoStateChange(map);
                     break;
@@ -244,10 +245,6 @@ class ReactVlcPlayerView extends TextureView implements
                     break;
                 case MediaPlayer.Event.EncounteredError:
                     map.putString("type","Error");
-                    eventEmitter.onVideoStateChange(map);
-                    break;
-                default:
-                    map.putString("type",event.type+"");
                     eventEmitter.onVideoStateChange(map);
                     break;
             }
