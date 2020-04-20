@@ -29,8 +29,14 @@ import Video from "@lunarr/vlc-player";
   style={styles.video}
   onProgress={({ currentTime, duration }) => {
     setState({
-      currentTime, // milliseconds
-      duration // milliseconds
+      currentTime, // seconds
+      duration // seconds
+    });
+  }}
+  onSeek={({ currentTime, duration }) => {
+    setState({
+      currentTime, // seconds
+      duration // seconds
     });
   }}
   onEnd={() => {
