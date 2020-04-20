@@ -12,6 +12,7 @@ export default class VLCPlayer extends React.PureComponent {
     this.play = this.play.bind(this);
     this.snapshot = this.snapshot.bind(this);
     this._onProgress = this._onProgress.bind(this);
+    this._onSeek = this._onSeek.bind(this);
     this._onLoadStart = this._onLoadStart.bind(this);
     this._onSnapshot = this._onSnapshot.bind(this);
     this._onVideoStateChange = this._onVideoStateChange.bind(this);
@@ -101,6 +102,12 @@ export default class VLCPlayer extends React.PureComponent {
     }
   }
 
+  _onSeek(event) {
+    if (this.props.onSeek) {
+      this.props.onSeek(event.nativeEvent);
+    }
+  }
+
   _onSnapshot(event) {
     if (this.props.onSnapshot) {
       this.props.onSnapshot(event.nativeEvent);
@@ -153,6 +160,7 @@ export default class VLCPlayer extends React.PureComponent {
       style: [styles.base, this.props.style],
       onVideoLoadStart: this._onLoadStart,
       onVideoProgress: this._onProgress,
+      onVideoSeek: this._onSeek,
       onVideoStateChange: this._onVideoStateChange,
       onSnapshot: this._onSnapshot
     };
@@ -201,6 +209,7 @@ VLCPlayer.propTypes = {
   play: PropTypes.func,
   snapshot: PropTypes.func,
   onError: PropTypes.func,
+  onSeek: PropTypes.func,
   onProgress: PropTypes.func,
   onBuffer: PropTypes.func,
   onEnd: PropTypes.func,
