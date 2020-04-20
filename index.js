@@ -70,7 +70,11 @@ export default class VLCPlayer extends React.PureComponent {
   _onVideoStateChange({ nativeEvent }) {
     switch (nativeEvent.type) {
       case "Opening":
-        this.props.onLoad && this.props.onLoad(nativeEvent);
+        this.props.onLoad &&
+          this.props.onLoad({
+            currentTime: nativeEvent.currentTime / 1000,
+            duration: nativeEvent.duration / 1000
+          });
         break;
       case "Stopped":
         this.props.onStopped && this.props.onStopped(nativeEvent);
@@ -96,15 +100,21 @@ export default class VLCPlayer extends React.PureComponent {
     }
   }
 
-  _onProgress(event) {
+  _onProgress({ nativeEvent }) {
     if (this.props.onProgress) {
-      this.props.onProgress(event.nativeEvent);
+      this.props.onProgress({
+        currentTime: nativeEvent.currentTime / 1000,
+        duration: nativeEvent.duration / 1000
+      });
     }
   }
 
-  _onSeek(event) {
+  _onSeek({ nativeEvent }) {
     if (this.props.onSeek) {
-      this.props.onSeek(event.nativeEvent);
+      this.props.onSeek({
+        currentTime: nativeEvent.currentTime / 1000,
+        duration: nativeEvent.duration / 1000
+      });
     }
   }
 
