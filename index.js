@@ -76,14 +76,17 @@ export default class VLCPlayer extends React.PureComponent {
             duration: nativeEvent.duration / 1000
           });
         break;
+      case "Buffering":
+        this.props.onBuffer && this.props.onBuffer(nativeEvent);
+        break;
+      case "Metadata":
+        this.props.onMetadata && this.props.onMetadata(nativeEvent);
+        break;
       case "Stopped":
         this.props.onStopped && this.props.onStopped(nativeEvent);
         break;
       case "Ended":
         this.props.onEnd && this.props.onEnd(nativeEvent);
-        break;
-      case "Buffering":
-        this.props.onBuffer && this.props.onBuffer(nativeEvent);
         break;
       case "Error":
         this.props.onError && this.props.onError(nativeEvent);
@@ -215,12 +218,16 @@ VLCPlayer.propTypes = {
   onLoadStart: PropTypes.func,
 
   /* Wrapper component */
-  source: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
+  source: PropTypes.oneOfType([
+    PropTypes.object.isRequired,
+    PropTypes.number.isRequired
+  ]),
   play: PropTypes.func,
   snapshot: PropTypes.func,
   onError: PropTypes.func,
   onSeek: PropTypes.func,
   onProgress: PropTypes.func,
+  onMetadata: PropTypes.func,
   onBuffer: PropTypes.func,
   onEnd: PropTypes.func,
   onStopped: PropTypes.func,
