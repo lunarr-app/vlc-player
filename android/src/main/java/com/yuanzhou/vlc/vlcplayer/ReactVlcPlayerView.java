@@ -301,7 +301,7 @@ class ReactVlcPlayerView extends TextureView implements
     }
 
     private void onStopPlayback() {
-        setKeepScreenOn(false);
+        // setKeepScreenOn(false);
         audioManager.abandonAudioFocus(this);
     }
 
@@ -587,7 +587,33 @@ class ReactVlcPlayerView extends TextureView implements
         public void onEvent(Media.Event event) {
             switch (event.type) {
                 case Media.Event.MetaChanged:
+                    // New metadata received
                     Log.i(tag, "Media.Event.MetaChanged:  =" + event.getMetaId());
+                    WritableMap map = Arguments.createMap();
+                    Media media = mMediaPlayer.getMedia();
+                    map.putString("type","Metadata");
+                    map.putString("title",media.getMeta(Media.Meta.Title));
+                    map.putString("artist",media.getMeta(Media.Meta.Artist));
+                    map.putString("genre",media.getMeta(Media.Meta.Genre));
+                    map.putString("copyright",media.getMeta(Media.Meta.Copyright));
+                    map.putString("album",media.getMeta(Media.Meta.Album));
+                    map.putString("tracknumber",media.getMeta(Media.Meta.TrackNumber));
+                    map.putString("description",media.getMeta(Media.Meta.Description));
+                    map.putString("rating",media.getMeta(Media.Meta.Rating));
+                    map.putString("date",media.getMeta(Media.Meta.Date));
+                    map.putString("language",media.getMeta(Media.Meta.Language));
+                    map.putString("publisher",media.getMeta(Media.Meta.Publisher));
+                    map.putString("encodedby",media.getMeta(Media.Meta.EncodedBy));
+                    map.putString("artwork",media.getMeta(Media.Meta.ArtworkURL).toString());
+                    map.putString("trackid",media.getMeta(Media.Meta.TrackID));
+                    map.putString("tracktotal",media.getMeta(Media.Meta.TrackTotal));
+                    map.putString("director",media.getMeta(Media.Meta.Director));
+                    map.putString("season",media.getMeta(Media.Meta.Season));
+                    map.putString("episode",media.getMeta(Media.Meta.Episode));
+                    map.putString("showname",media.getMeta(Media.Meta.ShowName));
+                    map.putString("albumartist",media.getMeta(Media.Meta.AlbumArtist));
+                    map.putString("discnumber",media.getMeta(Media.Meta.DiscNumber));
+                    eventEmitter.onVideoStateChange(map);
                     break;
                 case Media.Event.ParsedChanged:
                     Log.i(tag, "Media.Event.ParsedChanged  =" + event.getMetaId());
