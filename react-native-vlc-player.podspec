@@ -18,5 +18,5 @@ Pod::Spec.new do |s|
   # s.framework           = 'AudioToolbox','AVFoundation', 'CFNetwork', 'CoreFoundation', 'CoreGraphics', 'CoreMedia', 'CoreText', 'CoreVideo', 'Foundation', 'OpenGLES', 'QuartzCore', 'Security', 'VideoToolbox', 'UIKit'
 
   s.dependency      'React'
-  s.dependency      'MobileVLCKit','~> 3.3.9'
+  s.dependency      'MobileVLCKit','~> 3.3.10'
 end
