@@ -10,6 +10,7 @@ export default class VLCPlayer extends React.PureComponent {
     this.seek = this.seek.bind(this);
     this.resume = this.resume.bind(this);
     this.play = this.play.bind(this);
+    this.getMetadata = this.getMetadata.bind(this);
     this.snapshot = this.snapshot.bind(this);
     this._onProgress = this._onProgress.bind(this);
     this._onSeek = this._onSeek.bind(this);
@@ -29,6 +30,10 @@ export default class VLCPlayer extends React.PureComponent {
 
   setNativeProps(nativeProps) {
     this._video.setNativeProps(nativeProps);
+  }
+
+  getMetadata() {
+    this.setNativeProps({ metadata: true });
   }
 
   clear() {

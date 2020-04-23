@@ -33,7 +33,7 @@ public class ReactVlcPlayerViewManager extends SimpleViewManager<ReactVlcPlayerV
     private static final String PROP_SNAPSHOT_PATH = "snapshotPath";
     private static final String PROP_AUTO_ASPECT_RATIO = "autoAspectRatio";
     private static final String PROP_CLEAR = "clear";
-
+    private static final String PROP_METADATA = "metadata";
 
 
     @Override
@@ -140,7 +140,12 @@ public class ReactVlcPlayerViewManager extends SimpleViewManager<ReactVlcPlayerV
         videoView.doSnapshot(snapshotPath);
     }
 
-
+    @ReactProp(name = PROP_METADATA, defaultBoolean = false)
+    public void getMetadata(final ReactVlcPlayerView videoView, final boolean metadata) {
+        if (metadata) {
+          return videoView.getMetadata();
+        }
+    }
 
     private boolean startsWithValidScheme(String uriString) {
         return uriString.startsWith("http://")
