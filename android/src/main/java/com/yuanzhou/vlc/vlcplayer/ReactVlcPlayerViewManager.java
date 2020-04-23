@@ -143,7 +143,7 @@ public class ReactVlcPlayerViewManager extends SimpleViewManager<ReactVlcPlayerV
     @ReactProp(name = PROP_METADATA, defaultBoolean = false)
     public void getMetadata(final ReactVlcPlayerView videoView, final boolean metadata) {
         if (metadata) {
-          return videoView.getMetadata();
+          videoView.getMetadata();
         }
     }
 
