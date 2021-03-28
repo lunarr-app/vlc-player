@@ -1,4 +1,4 @@
-package com.yuanzhou.vlc;
+package com.lunarr.vlc;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;
@@ -9,7 +9,7 @@ import com.facebook.react.uimanager.ViewManager;
 import java.util.Collections;
 import java.util.List;
 
-import com.yuanzhou.vlc.vlcplayer.ReactVlcPlayerViewManager;
+import com.lunarr.vlc.vlcplayer.ReactVlcPlayerViewManager;
 
 public class ReactVlcPlayerPackage implements ReactPackage {
 
