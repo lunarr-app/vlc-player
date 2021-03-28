@@ -105,7 +105,7 @@ static NSString *const playbackRate = @"rate";
         BOOL isNetWork   = [RCTConvert BOOL:[_source objectForKey:@"isNetwork"]];
         NSURL* _uri    = [NSURL URLWithString:uri];
         if(uri && uri.length > 0){
-            //init player && play
+            // init player && play
             if(initType == 2){
                 _player = [[VLCMediaPlayer alloc] initWithOptions:options];
             }else{
@@ -161,25 +161,9 @@ static NSString *const playbackRate = @"rate";
         BOOL isNetWork   = [RCTConvert BOOL:[source objectForKey:@"isNetwork"]];
         NSURL* _uri    = [NSURL URLWithString:uri];
         if(uri && uri.length > 0){
-            //init player && play
+            // init player && play
             if(initType == 2){
-              // _player = [[VLCMediaPlayer alloc] initWithOptions:options];
-              // NOTE: Set defaultParams manually before init player
-              //       As app crashes on second play initWithOptions
-              //       https://code.videolan.org/videolan/VLCKit/issues/311
-                NSMutableArray* defaultParams = [options mutableCopy];
-                [defaultParams addObject:@"--play-and-pause"];                          // We want every movie to pause instead of stopping at eof
-                [defaultParams addObject:@"--no-color"];                                // Don't use color in output (Xcode doesn't show it)
-                [defaultParams addObject:@"--no-video-title-show"];                     // Don't show the title on overlay when starting to play
-                [defaultParams addObject:@"--verbose=4"];                               // Let's not wreck the logs
-                [defaultParams addObject:@"--no-sout-keep"];
-                [defaultParams addObject:@"--vout=macosx"];                             // Select Mac OS X video output
-                [defaultParams addObject:@"--text-renderer=freetype"];
-                [defaultParams addObject:@"--extraintf=macosx_dialog_provider"];        // Some extra dialog (login, progress) may come up from here
-                [defaultParams addObject:@"--audio-resampler=soxr"];                    // High quality resamper (will be used by default on VLC 4.0)
-
-                [[NSUserDefaults standardUserDefaults] setObject:defaultParams forKey:@"VLCParams"];
-                 _player = [[VLCMediaPlayer alloc] init];
+                _player = [[VLCMediaPlayer alloc] initWithOptions:options];
             }else{
                 _player = [[VLCMediaPlayer alloc] init];
             }

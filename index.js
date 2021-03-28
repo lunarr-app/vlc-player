@@ -23,9 +23,9 @@ export default class VLCPlayer extends React.PureComponent {
 
   static defaultProps = {
     autoplay: true,
-    initType: 1,
-    initOptions: [],
-    style: {}
+    initType: 2,
+    initOptions: ["--play-and-pause", "--no-color", "--verbose=0"],
+    style: {},
   };
 
   setNativeProps(nativeProps) {
@@ -78,7 +78,7 @@ export default class VLCPlayer extends React.PureComponent {
         this.props.onLoad &&
           this.props.onLoad({
             currentTime: nativeEvent.currentTime / 1000,
-            duration: nativeEvent.duration / 1000
+            duration: nativeEvent.duration / 1000,
           });
         break;
       case "Buffering":
@@ -112,7 +112,7 @@ export default class VLCPlayer extends React.PureComponent {
     if (this.props.onProgress) {
       this.props.onProgress({
         currentTime: nativeEvent.currentTime / 1000,
-        duration: nativeEvent.duration / 1000
+        duration: nativeEvent.duration / 1000,
       });
     }
   }
@@ -121,7 +121,7 @@ export default class VLCPlayer extends React.PureComponent {
     if (this.props.onSeek) {
       this.props.onSeek({
         currentTime: nativeEvent.currentTime / 1000,
-        duration: nativeEvent.duration / 1000
+        duration: nativeEvent.duration / 1000,
       });
     }
   }
@@ -180,12 +180,12 @@ export default class VLCPlayer extends React.PureComponent {
       onVideoProgress: this._onProgress,
       onVideoSeek: this._onSeek,
       onVideoStateChange: this._onVideoStateChange,
-      onSnapshot: this._onSnapshot
+      onSnapshot: this._onSnapshot,
     };
 
     return (
       <Player
-        ref={ref => {
+        ref={(ref) => {
           this._video = ref;
         }}
         {...nativeProps}
@@ -225,7 +225,7 @@ VLCPlayer.propTypes = {
   /* Wrapper component */
   source: PropTypes.oneOfType([
     PropTypes.object.isRequired,
-    PropTypes.number.isRequired
+    PropTypes.number.isRequired,
   ]),
   play: PropTypes.func,
   snapshot: PropTypes.func,
@@ -243,11 +243,11 @@ VLCPlayer.propTypes = {
   translateX: PropTypes.number,
   translateY: PropTypes.number,
   rotation: PropTypes.number,
-  ...View.propTypes
+  ...View.propTypes,
 };
 
 const styles = StyleSheet.create({
   base: {
-    overflow: "hidden"
-  }
+    overflow: "hidden",
+  },
 });
