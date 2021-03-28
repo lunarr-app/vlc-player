@@ -1,4 +1,4 @@
-package com.yuanzhou.vlc.vlcplayer;
+package com.lunarr.vlc.vlcplayer;
 
 import androidx.annotation.StringDef;
 import android.util.Log;
