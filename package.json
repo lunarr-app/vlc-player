@@ -1,6 +1,6 @@
 {
   "name": "@lunarr/vlc-player",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "VLC Player for React Native",
   "main": "index.js",
   "scripts": {
