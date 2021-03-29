@@ -1,12 +1,12 @@
 import React from "react";
 import { StyleSheet, View, Platform } from "react-native";
-import resolveAssetSource from "react-native/Libraries/Image/resolveAssetSource";
+import { Image } from "react-native";
 import PropTypes from "prop-types";
 import Player from "./VLCPlayer";
 
 export default class VLCPlayer extends React.PureComponent {
-  constructor(props, context) {
-    super(props, context);
+  constructor(props) {
+    super(props);
     this.seek = this.seek.bind(this);
     this.resume = this.resume.bind(this);
     this.play = this.play.bind(this);
@@ -133,7 +133,7 @@ export default class VLCPlayer extends React.PureComponent {
   }
 
   render() {
-    const source = resolveAssetSource({ ...this.props.source }) || {};
+    const source = Image.resolveAssetSource({ ...this.props.source }) || {};
     let uri = source.uri || "";
     let isNetwork = !!(uri && uri.match(/^https?:/));
     const isAsset = !!(
