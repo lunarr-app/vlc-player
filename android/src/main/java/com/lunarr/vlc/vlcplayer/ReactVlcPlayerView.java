@@ -324,7 +324,7 @@ class ReactVlcPlayerView extends TextureView implements
 
             if(initOptions != null){
                 ArrayList options = initOptions.toArrayList();
-                for(int i=0; i < options.size() - 1 ; i++){
+                for(int i=0; i < options.size(); i++){
                     String option = (String)options.get(i);
                     cOptions.add(option);
                 }
@@ -370,7 +370,7 @@ class ReactVlcPlayerView extends TextureView implements
             //添加media  option
             if(mediaOptions != null){
                 ArrayList options = mediaOptions.toArrayList();
-                for(int i=0; i < options.size() - 1 ; i++){
+                for(int i=0; i < options.size(); i++){
                     String option = (String)options.get(i);
                      m.addOption(option);
                 }
