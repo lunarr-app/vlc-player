@@ -145,19 +145,7 @@ export default class VLCPlayer extends React.PureComponent {
     if (uri && uri.match(/^\//)) {
       isNetwork = false;
     }
-    if (Platform.OS === "ios") {
-      source.mediaOptions = this.props.mediaOptions || {};
-    } else {
-      let mediaOptionsList = [];
-      let mediaOptions = this.props.mediaOptions || {};
-      let keys = Object.keys(mediaOptions);
-      for (let i = 0; i < keys.length - 1; i++) {
-        let optionKey = keys[i];
-        let optionValue = mediaOptions[optionKey];
-        mediaOptionsList.push(optionKey + "=" + optionValue);
-      }
-      source.mediaOptions = mediaOptionsList;
-    }
+    source.mediaOptions = this.props.mediaOptions || {};
     source.initOptions = this.props.initOptions;
     source.isNetwork = isNetwork;
     source.autoplay = this.props.autoplay;
