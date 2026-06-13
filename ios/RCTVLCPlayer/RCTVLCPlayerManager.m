@@ -31,6 +31,10 @@ RCT_EXPORT_VIEW_PROPERTY(clear, BOOL);
 RCT_EXPORT_VIEW_PROPERTY(seekTime, int);
 RCT_EXPORT_VIEW_PROPERTY(videoAspectRatio, NSString);
 RCT_EXPORT_VIEW_PROPERTY(snapshotPath, NSString);
+RCT_EXPORT_VIEW_PROPERTY(autoAspectRatio, BOOL);
+RCT_EXPORT_VIEW_PROPERTY(position, float);
+RCT_EXPORT_VIEW_PROPERTY(repeat, BOOL);
+RCT_EXPORT_VIEW_PROPERTY(metadata, BOOL);
 /* Should support: onLoadStart, onLoad, and onError to stay consistent with Image */
 /*RCT_EXPORT_VIEW_PROPERTY(onVideoPaused, RCTDirectEventBlock);
  RCT_EXPORT_VIEW_PROPERTY(onVideoStopped, RCTDirectEventBlock);

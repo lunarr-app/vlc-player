@@ -24,6 +24,8 @@ public class ReactVlcPlayerViewManager extends SimpleViewManager<ReactVlcPlayerV
     private static final String PROP_PAUSED = "paused";
     private static final String PROP_MUTED = "muted";
     private static final String PROP_VOLUME = "volume";
+    private static final String PROP_VOLUME_UP = "volumeUp";
+    private static final String PROP_VOLUME_DOWN = "volumeDown";
     private static final String PROP_SEEK = "seek";
     private static final String PROP_RESUME = "resume";
     private static final String PROP_RATE = "rate";
@@ -98,6 +100,16 @@ public class ReactVlcPlayerViewManager extends SimpleViewManager<ReactVlcPlayerV
     @ReactProp(name = PROP_VOLUME, defaultFloat = 1.0f)
     public void setVolume(final ReactVlcPlayerView videoView, final float volume) {
         videoView.setVolumeModifier((int)volume);
+    }
+
+    @ReactProp(name = PROP_VOLUME_UP)
+    public void setVolumeUp(final ReactVlcPlayerView videoView, final int step) {
+        videoView.volumeUp(step);
+    }
+
+    @ReactProp(name = PROP_VOLUME_DOWN)
+    public void setVolumeDown(final ReactVlcPlayerView videoView, final int step) {
+        videoView.volumeDown(step);
     }
 
 

@@ -2,6 +2,7 @@ package com.lunarr.vlc.vlcplayer;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.SurfaceTexture;
@@ -27,6 +28,8 @@ import org.videolan.libvlc.IVLCVout;
 import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 @SuppressLint("ViewConstructor")
@@ -216,8 +219,13 @@ class ReactVlcPlayerView extends TextureView implements
                   eventEmitter.progressChanged(map);
                   break;
                 case MediaPlayer.Event.EndReached:
-                    map.putString("type","Ended");
-                    eventEmitter.onVideoStateChange(map);
+                    if (repeat) {
+                        mMediaPlayer.setTime(0);
+                        mMediaPlayer.play();
+                    } else {
+                        map.putString("type","Ended");
+                        eventEmitter.onVideoStateChange(map);
+                    }
                     break;
                 case MediaPlayer.Event.Playing:
                     map.putString("type","Playing");
@@ -481,6 +489,22 @@ class ReactVlcPlayerView extends TextureView implements
         }
     }
 
+    public void volumeUp(int step) {
+        if (mMediaPlayer != null) {
+            int delta = step > 0 ? step : 20;
+            int volume = mMediaPlayer.getVolume();
+            mMediaPlayer.setVolume(Math.min(200, volume + delta));
+        }
+    }
+
+    public void volumeDown(int step) {
+        if (mMediaPlayer != null) {
+            int delta = step > 0 ? step : 20;
+            int volume = mMediaPlayer.getVolume();
+            mMediaPlayer.setVolume(Math.max(0, volume - delta));
+        }
+    }
+
     /**
      * 改变静音状态
      * @param muted
@@ -522,7 +546,31 @@ class ReactVlcPlayerView extends TextureView implements
      * @param path
      */
     public void doSnapshot(String path){
-       return;
+        if (path == null || path.isEmpty()) {
+            eventEmitter.onSnapshot(0);
+            return;
+        }
+        post(() -> {
+            int width = mVideoWidth > 0 ? mVideoWidth : getWidth();
+            int height = mVideoHeight > 0 ? mVideoHeight : getHeight();
+            if (width <= 0 || height <= 0) {
+                eventEmitter.onSnapshot(0);
+                return;
+            }
+            Bitmap bitmap = getBitmap(width, height);
+            if (bitmap == null) {
+                eventEmitter.onSnapshot(0);
+                return;
+            }
+            try (FileOutputStream out = new FileOutputStream(path)) {
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                eventEmitter.onSnapshot(1);
+            } catch (IOException e) {
+                eventEmitter.onSnapshot(0);
+            } finally {
+                bitmap.recycle();
+            }
+        });
     }
 
 
@@ -536,6 +584,7 @@ class ReactVlcPlayerView extends TextureView implements
 
 
     public void setRepeatModifier(boolean repeat){
+        this.repeat = repeat;
     }
 
 

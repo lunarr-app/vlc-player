@@ -21,6 +21,8 @@ static NSString *const playbackRate = @"rate";
     NSDictionary * _source;
     BOOL _paused;
     BOOL _started;
+    BOOL _autoAspectRatio;
+    BOOL _repeat;
 
 }
 
@@ -60,6 +62,31 @@ static NSString *const playbackRate = @"rate";
 {
     if(!_paused)
         [self play];
+}
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    if (_autoAspectRatio && _player && self.bounds.size.width > 0 && self.bounds.size.height > 0) {
+        NSString *ratio = [NSString stringWithFormat:@"%d:%d",
+                           (int)self.bounds.size.width,
+                           (int)self.bounds.size.height];
+        char *char_content = [ratio cStringUsingEncoding:NSASCIIStringEncoding];
+        [_player setVideoAspectRatio:char_content];
+    }
+}
+
+- (void)applyHWDecoderOptions:(VLCMedia *)media fromSource:(NSDictionary *)source
+{
+    NSNumber *hwDecoderEnabled = [source objectForKey:@"hwDecoderEnabled"];
+    if (!hwDecoderEnabled) {
+        return;
+    }
+    if ([hwDecoderEnabled intValue] >= 1) {
+        [media addOption:@":avcodec-hw=videotoolbox"];
+    } else {
+        [media addOption:@":avcodec-hw=none"];
+    }
 }
 
 - (void)setPaused:(BOOL)paused
@@ -122,6 +149,7 @@ static NSString *const playbackRate = @"rate";
             if(mediaOptions){
                 [media addOptions:mediaOptions];
             }
+            [self applyHWDecoderOptions:media fromSource:_source];
             /*if(videoRatio){
                 _player.videoAspectRatio = videoRatio;
             }*/
@@ -179,6 +207,7 @@ static NSString *const playbackRate = @"rate";
                 if(mediaOptions){
                     [media addOptions:mediaOptions];
                 }
+                [self applyHWDecoderOptions:media fromSource:source];
                 [media parseWithOptions:VLCMediaParseLocal|VLCMediaFetchLocal|VLCMediaParseNetwork|VLCMediaFetchNetwork];
                  _player.media = media;
             }
@@ -273,7 +302,7 @@ static NSString *const playbackRate = @"rate";
                 case VLCMediaPlayerStateStopped:
                     self.onVideoStateChange(@{
                                               @"target": self.reactTag,
-                                              @"type": @"Stoped",
+                                              @"type": @"Stopped",
                                             });
                     break;
                 case VLCMediaPlayerStateBuffering:
@@ -297,11 +326,15 @@ static NSString *const playbackRate = @"rate";
                                             });
                     break;
                 case VLCMediaPlayerStateEnded:
-                    NSLog(@"VLCMediaPlayerStateEnded %i",1);
-                    self.onVideoStateChange(@{
-                                              @"target": self.reactTag,
-                                              @"type": @"Ended",
-                                            });
+                    if (_repeat) {
+                        [_player setTime:[VLCTime timeWithInt:0]];
+                        [self play];
+                    } else {
+                        self.onVideoStateChange(@{
+                                                  @"target": self.reactTag,
+                                                  @"type": @"Ended",
+                                                });
+                    }
                     break;
                 case VLCMediaPlayerStateError:
                     self.onVideoStateChange(@{
@@ -425,10 +458,65 @@ static NSString *const playbackRate = @"rate";
 
 
 -(void)setVideoAspectRatio:(NSString *)ratio{
-    if(ratio != nil && ratio.length > 0){
+    if(!_autoAspectRatio && ratio != nil && ratio.length > 0 && _player){
         char *char_content = [ratio cStringUsingEncoding:NSASCIIStringEncoding];
         [_player setVideoAspectRatio:char_content];
     }
+}
+
+-(void)setAutoAspectRatio:(BOOL)autoAspectRatio
+{
+    _autoAspectRatio = autoAspectRatio;
+    [self setNeedsLayout];
+}
+
+-(void)setPosition:(float)position
+{
+    if(_player && position >= 0 && position <= 1){
+        _player.position = position;
+    }
+}
+
+-(void)setRepeat:(BOOL)repeat
+{
+    _repeat = repeat;
+}
+
+-(void)setMetadata:(BOOL)metadata
+{
+    if(!metadata || !_player || !_player.media){
+        return;
+    }
+    VLCMediaMetaData *meta = _player.media.metaData;
+    if(!meta){
+        return;
+    }
+    NSMutableDictionary *payload = [NSMutableDictionary dictionaryWithDictionary:@{
+        @"target": self.reactTag,
+        @"type": @"Metadata",
+    }];
+    if (meta.title) payload[@"title"] = meta.title;
+    if (meta.artist) payload[@"artist"] = meta.artist;
+    if (meta.genre) payload[@"genre"] = meta.genre;
+    if (meta.copyright) payload[@"copyright"] = meta.copyright;
+    if (meta.album) payload[@"album"] = meta.album;
+    if (meta.trackNumber) payload[@"tracknumber"] = [NSString stringWithFormat:@"%u", meta.trackNumber];
+    if (meta.metaDescription) payload[@"description"] = meta.metaDescription;
+    if (meta.rating) payload[@"rating"] = meta.rating;
+    if (meta.date) payload[@"date"] = meta.date;
+    if (meta.language) payload[@"language"] = meta.language;
+    if (meta.publisher) payload[@"publisher"] = meta.publisher;
+    if (meta.encodedBy) payload[@"encodedby"] = meta.encodedBy;
+    if (meta.artworkURL) payload[@"artwork"] = meta.artworkURL.absoluteString;
+    if (meta.trackID) payload[@"trackid"] = [NSString stringWithFormat:@"%u", meta.trackID];
+    if (meta.trackTotal) payload[@"tracktotal"] = [NSString stringWithFormat:@"%u", meta.trackTotal];
+    if (meta.director) payload[@"director"] = meta.director;
+    if (meta.season) payload[@"season"] = [NSString stringWithFormat:@"%u", meta.season];
+    if (meta.episode) payload[@"episode"] = [NSString stringWithFormat:@"%u", meta.episode];
+    if (meta.showName) payload[@"showname"] = meta.showName;
+    if (meta.albumArtist) payload[@"albumartist"] = meta.albumArtist;
+    if (meta.discNumber) payload[@"discnumber"] = [NSString stringWithFormat:@"%u", meta.discNumber];
+    self.onVideoStateChange(payload);
 }
 
 - (void)_release
