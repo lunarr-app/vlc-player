@@ -1,7 +1,6 @@
 import React from "react";
-import { StyleSheet, View, Platform } from "react-native";
+import { StyleSheet, Platform } from "react-native";
 import { Image } from "react-native";
-import PropTypes from "prop-types";
 import Player from "./VLCPlayer";
 
 export default class VLCPlayer extends React.PureComponent {
@@ -193,58 +192,6 @@ export default class VLCPlayer extends React.PureComponent {
     );
   }
 }
-
-VLCPlayer.propTypes = {
-  /* Native only */
-  rate: PropTypes.number,
-  seek: PropTypes.number,
-  resume: PropTypes.bool,
-  position: PropTypes.number,
-  snapshotPath: PropTypes.string,
-  paused: PropTypes.bool,
-  autoAspectRatio: PropTypes.bool,
-  videoAspectRatio: PropTypes.string,
-
-  /* Volume: 0-200 */
-  volume: PropTypes.number,
-  volumeUp: PropTypes.number,
-  volumeDown: PropTypes.number,
-  repeat: PropTypes.bool,
-  muted: PropTypes.bool,
-
-  hwDecoderEnabled: PropTypes.number,
-  hwDecoderForced: PropTypes.number,
-
-  onVideoLoadStart: PropTypes.func,
-  onVideoStateChange: PropTypes.func,
-  onVideoProgress: PropTypes.func,
-  onSnapshot: PropTypes.func,
-  onOpen: PropTypes.func,
-  onLoadStart: PropTypes.func,
-
-  /* Wrapper component */
-  source: PropTypes.oneOfType([
-    PropTypes.object.isRequired,
-    PropTypes.number.isRequired,
-  ]),
-  play: PropTypes.func,
-  snapshot: PropTypes.func,
-  onError: PropTypes.func,
-  onSeek: PropTypes.func,
-  onProgress: PropTypes.func,
-  onMetadata: PropTypes.func,
-  onBuffer: PropTypes.func,
-  onEnd: PropTypes.func,
-  onStopped: PropTypes.func,
-
-  /* Required by react-native */
-  scaleX: PropTypes.number,
-  scaleY: PropTypes.number,
-  translateX: PropTypes.number,
-  translateY: PropTypes.number,
-  rotation: PropTypes.number,
-  ...View.propTypes,
-};
 
 const styles = StyleSheet.create({
   base: {

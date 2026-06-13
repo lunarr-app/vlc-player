@@ -3,6 +3,7 @@
   "version": "1.0.5",
   "description": "VLC Player for React Native",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -29,8 +30,5 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*"
-  },
-  "dependencies": {
-    "prop-types": "^15.8.1"
   }
 }
