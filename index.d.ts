@@ -1,4 +1,4 @@
-import type { PureComponent } from "react";
+import React from "react";
 import type { ImageSourcePropType, ViewProps } from "react-native";
 
 export interface VLCProgressEvent {
@@ -70,7 +70,7 @@ export interface VLCSnapshotEvent {
 }
 
 export interface VLCPlayerProps extends ViewProps {
-  source: ImageSourcePropType | { uri: string };
+  source: ImageSourcePropType | { uri: string | null };
   autoplay?: boolean;
   initType?: 1 | 2;
   initOptions?: string[];
@@ -83,6 +83,9 @@ export interface VLCPlayerProps extends ViewProps {
   seek?: number;
   resume?: boolean;
   position?: number;
+  controls?: boolean;
+  resizeMode?: "contain" | "cover" | "stretch" | "none" | string;
+  progressUpdateInterval?: number;
   snapshotPath?: string;
   autoAspectRatio?: boolean;
   videoAspectRatio?: string;
@@ -104,9 +107,10 @@ export interface VLCPlayerProps extends ViewProps {
   onSnapshot?: (event: VLCSnapshotEvent) => void;
   onVideoStateChange?: (event: VLCStateChangeEvent) => void;
   onOpen?: (event: Record<string, unknown>) => void;
+  onAudioBecomingNoisy?: () => void;
 }
 
-declare class VLCPlayer extends PureComponent<VLCPlayerProps> {
+export interface VLCPlayerInstance extends React.PureComponent<VLCPlayerProps> {
   setNativeProps(nativeProps: Record<string, unknown>): void;
   getMetadata(): void;
   clear(): void;
@@ -118,5 +122,9 @@ declare class VLCPlayer extends PureComponent<VLCPlayerProps> {
   resume(isResume: boolean): void;
   snapshot(path: string): void;
 }
+
+declare const VLCPlayer: React.ComponentClass<VLCPlayerProps> & {
+  new (props: VLCPlayerProps, context?: any): VLCPlayerInstance;
+};
 
 export default VLCPlayer;
