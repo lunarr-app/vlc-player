@@ -2,6 +2,8 @@
 
 VLC Player for react-native based on `xuyuanzhou/react-native-yz-vlcplayer`, `delia-m/react-native-yz-vlcplayer` and `react-native-vlc-media-player` to be used on Lunarr.
 
+Uses **MobileVLCKit 3.7.3** (iOS) and **libvlc-all 3.6.5** (Android).
+
 ## Installation
 
 #### React Native 0.60+
@@ -16,7 +18,9 @@ Build Settings ---> search Bitcode
 
 ![disable bitcode](https://raw.githubusercontent.com/xuyuanzhou/react-native-yz-vlcplayer/master/images/4.png)
 
-Don't forget to `pod update` and `gradlew clean`
+After installing, run `pod install --repo-update` in your app's `ios` directory.
+
+For Android, no extra Maven repository is required — `libvlc-all` is resolved from Maven Central. Run `./gradlew clean` after upgrading.
 
 ## Example
 
@@ -30,13 +34,13 @@ import Video from "@lunarr/vlc-player";
   onProgress={({ currentTime, duration }) => {
     setState({
       currentTime, // seconds
-      duration // seconds
+      duration, // seconds
     });
   }}
   onSeek={({ currentTime, duration }) => {
     setState({
       currentTime, // seconds
-      duration // seconds
+      duration, // seconds
     });
   }}
   onEnd={() => {
@@ -48,10 +52,10 @@ import Video from "@lunarr/vlc-player";
       error: {
         error: "Oops!",
         message:
-          "There was an error playing this video, please try again later."
-      }
+          "There was an error playing this video, please try again later.",
+      },
     });
   }}
   paused={!state.play}
-/>
+/>;
 ```

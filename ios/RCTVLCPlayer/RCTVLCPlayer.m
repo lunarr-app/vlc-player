@@ -1,7 +1,6 @@
 #import "React/RCTConvert.h"
 #import "RCTVLCPlayer.h"
 #import "React/RCTBridgeModule.h"
-#import "React/RCTEventDispatcher.h"
 #import "React/UIView+React.h"
 #import <MobileVLCKit/MobileVLCKit.h>
 #import <AVFoundation/AVFoundation.h>
@@ -17,8 +16,6 @@ static NSString *const playbackRate = @"rate";
 @implementation RCTVLCPlayer
 {
 
-    /* Required to publish events */
-    RCTEventDispatcher *_eventDispatcher;
     VLCMediaPlayer *_player;
 
     NSDictionary * _source;
@@ -27,10 +24,9 @@ static NSString *const playbackRate = @"rate";
 
 }
 
-- (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher
+- (instancetype)init
 {
     if ((self = [super init])) {
-        _eventDispatcher = eventDispatcher;
 
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(applicationWillResignActive:)
@@ -440,7 +436,6 @@ static NSString *const playbackRate = @"rate";
     if(_player){
         [_player stop];
         _player = nil;
-        _eventDispatcher = nil;
     }
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }

@@ -10,7 +10,7 @@ RCT_EXPORT_MODULE();
 
 - (UIView *)view
 {
-    return [[RCTVLCPlayer alloc] initWithEventDispatcher:self.bridge.eventDispatcher];
+    return [[RCTVLCPlayer alloc] init];
 }
 
 

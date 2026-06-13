@@ -1,7 +1,5 @@
 #import "React/RCTView.h"
 
-@class RCTEventDispatcher;
-
 @interface RCTVLCPlayer : UIView
 
 @property (nonatomic, copy) RCTDirectEventBlock onVideoProgress;
@@ -15,7 +13,5 @@
 @property (nonatomic, copy) RCTDirectEventBlock onVideoLoadStart;
 @property (nonatomic, copy) RCTDirectEventBlock onSnapshot;
 @property (nonatomic, copy) RCTDirectEventBlock onVideoStateChange;
-
-- (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher NS_DESIGNATED_INITIALIZER;
 
 @end

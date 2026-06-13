@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
   s.homepage        = package['repository']['url']
   s.license         = package['license']
 
-  s.platform        = :ios, '9.0'
+  s.platform        = :ios, '12.0'
   s.source          = { git: 'https://github.com/lunarr-app/vlc-player.git', tag: 'master' }
   s.preserve_paths  = 'ios/**/*'
   s.source_files    = 'ios/**/*.{h,m}'
@@ -17,6 +17,6 @@ Pod::Spec.new do |s|
   # s.libraries           = 'bz2', 'iconv'
   # s.framework           = 'AudioToolbox','AVFoundation', 'CFNetwork', 'CoreFoundation', 'CoreGraphics', 'CoreMedia', 'CoreText', 'CoreVideo', 'Foundation', 'OpenGLES', 'QuartzCore', 'Security', 'VideoToolbox', 'UIKit'
 
-  s.dependency      'React'
-  s.dependency      'MobileVLCKit','~> 3.3.17'
+  s.dependency      'React-Core'
+  s.dependency      'MobileVLCKit', '~> 3.7.3'
 end
