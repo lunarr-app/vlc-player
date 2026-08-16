@@ -1,0 +1,28 @@
+{
+  "name": "@lunarr/example",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.ts",
+  "scripts": {
+    "start": "expo start",
+    "ios": "expo run:ios",
+    "android": "expo run:android",
+    "prebuild": "expo prebuild",
+    "ios:tv": "EXPO_TV=1 expo prebuild --platform ios --clean && EXPO_TV=1 expo run:ios",
+    "android:tv": "EXPO_TV=1 expo prebuild --clean && expo run:android",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@lunarr/vlc-player": "workspace:*",
+    "expo": "~57.0.13",
+    "expo-file-system": "~57.0.4",
+    "expo-status-bar": "~57.0.1",
+    "react": "19.2.3",
+    "react-native": "npm:react-native-tvos@0.86.2-0"
+  },
+  "devDependencies": {
+    "@react-native-tvos/config-tv": "0.1.6",
+    "@types/react": "~19.2.0",
+    "typescript": "~5.9.0"
+  }
+}

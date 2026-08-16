@@ -1,0 +1,42 @@
+{
+  "cli": {
+    "version": ">= 5.2.0"
+  },
+  "build": {
+    "base": {
+      "distribution": "internal",
+      "ios": {
+        "simulator": true
+      },
+      "android": {
+        "buildType": "apk",
+        "withoutCredentials": true
+      }
+    },
+    "development": {
+      "extends": "base",
+      "android": {
+        "gradleCommand": ":app:assembleDebug"
+      },
+      "ios": {
+        "buildConfiguration": "Debug"
+      }
+    },
+    "development_tv": {
+      "extends": "development",
+      "env": {
+        "EXPO_TV": "1"
+      }
+    },
+    "preview": {
+      "extends": "base"
+    },
+    "preview_tv": {
+      "extends": "preview",
+      "env": {
+        "EXPO_TV": "1"
+      }
+    }
+  },
+  "submit": {}
+}

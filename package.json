@@ -1,34 +1,22 @@
 {
-  "name": "@lunarr/vlc-player",
-  "version": "1.1.0",
-  "description": "VLC Player for React Native",
-  "main": "index.js",
-  "types": "index.d.ts",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "vlc",
-    "player",
-    "android",
-    "ios",
-    "react",
-    "native",
-    "video",
-    "x265",
-    "mkv",
-    "vp9",
-    "avc1",
-    "h264"
+  "name": "vlc-player-monorepo",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Monorepo for @lunarr/vlc-player (React Native, New Architecture) and its example app",
+  "packageManager": "pnpm@11.22.0",
+  "workspaces": [
+    "packages/*"
   ],
-  "author": "Sayem Chowdhury",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/lunarr-app/vlc-player.git"
-  },
-  "license": "MIT",
-  "peerDependencies": {
-    "react": "*",
-    "react-native": "*"
+  "scripts": {
+    "typecheck": "pnpm -r run typecheck",
+    "example:start": "pnpm --filter @lunarr/example start",
+    "example:prebuild:ios": "pnpm --filter @lunarr/example exec expo prebuild --platform ios --clean",
+    "example:prebuild:tvos": "EXPO_TV=1 pnpm --filter @lunarr/example exec expo prebuild --platform ios --clean",
+    "example:ios": "pnpm --filter @lunarr/example ios",
+    "example:ios:clean": "pnpm run example:prebuild:ios && pnpm run example:ios",
+    "example:android": "pnpm --filter @lunarr/example android",
+    "example:tvos": "pnpm --filter @lunarr/example ios:tv",
+    "example:tvos:clean": "pnpm run example:prebuild:tvos && pnpm run example:tvos",
+    "example:androidtv": "pnpm --filter @lunarr/example android:tv"
   }
 }

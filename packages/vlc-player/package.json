@@ -1,0 +1,73 @@
+{
+  "name": "@lunarr/vlc-player",
+  "version": "2.0.0",
+  "description": "VLC media player for React Native (iOS, tvOS, Android & Android TV)",
+  "main": "src/index.ts",
+  "react-native": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit --noUnusedLocals --noUnusedParameters",
+    "build": "tsc --noEmit"
+  },
+  "keywords": [
+    "react",
+    "native",
+    "vlc",
+    "player",
+    "fabric",
+    "new-architecture",
+    "turbo-module",
+    "video",
+    "x265",
+    "mkv",
+    "vp9",
+    "avc1",
+    "h264"
+  ],
+  "author": "Sayem Chowdhury",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lunarr-app/vlc-player.git"
+  },
+  "license": "MIT",
+  "files": [
+    "android/",
+    "ios/",
+    "src/",
+    "specs/",
+    "react-native-vlc-player.podspec",
+    "react-native.config.js",
+    "LICENSE",
+    "README.md"
+  ],
+  "peerDependencies": {
+    "react": "*",
+    "react-native": ">=0.82.0"
+  },
+  "devDependencies": {
+    "@types/react": "~19.2.0",
+    "react": "19.2.3",
+    "react-native": "0.86.2",
+    "typescript": "~5.9.0"
+  },
+  "codegenConfig": {
+    "name": "VLCPlayerSpec",
+    "type": "all",
+    "jsSrcsDir": "specs",
+    "android": {
+      "javaPackageName": "com.lunarr.vlcplayer"
+    },
+    "ios": {
+      "modules": {
+        "VLCPlayerModule": {
+          "className": "VLCPlayerModule"
+        }
+      },
+      "components": {
+        "VLCPlayer": {
+          "className": "VLCPlayerComponentView"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "expo": {
+    "name": "VLC Player Example",
+    "slug": "vlc-player-example",
+    "version": "1.0.0",
+    "scheme": "vlcexample",
+    "orientation": "default",
+    "userInterfaceStyle": "automatic",
+    "plugins": [
+      "@react-native-tvos/config-tv"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.lunarr.vlcexample"
+    },
+    "android": {
+      "package": "com.lunarr.vlcexample"
+    }
+  }
+}

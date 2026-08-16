@@ -1,0 +1,52 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.facebook.react'
+apply plugin: 'org.jetbrains.kotlin.android'
+
+group = 'com.lunarr'
+version = '2.0.0'
+
+def safeExtGet(prop, fallback) {
+    rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+}
+
+android {
+    namespace = "com.lunarr.vlcplayer"
+
+    compileSdkVersion safeExtGet('compileSdkVersion', 36)
+    buildToolsVersion safeExtGet('buildToolsVersion', '36.0.0')
+
+    defaultConfig {
+        minSdkVersion safeExtGet('minSdkVersion', 24)
+        targetSdkVersion safeExtGet('targetSdkVersion', 36)
+        versionCode 1
+        versionName "2.0.0"
+        consumerProguardFiles 'proguard-rules.pro'
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64'
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    sourceSets {
+        main {
+            java.srcDirs += ['build/generated/source/codegen/java']
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    // Codegen-generated Fabric / TurboModule bindings from the ReactAndroid bridge.
+    implementation "com.facebook.react:react-android"
+    implementation 'org.videolan.android:libvlc-all:3.7.5'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.media:media:1.7.0'
+}
