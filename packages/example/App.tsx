@@ -12,7 +12,45 @@ import Video, {
   type VLCTrack,
 } from '@lunarr/vlc-player';
 
-const DEFAULT_URI = 'https://www.papytane.com/mp4/airelles.mp4';
+type QueueItem = {
+  uri: string;
+  title: string;
+  artist: string;
+  album: string;
+};
+
+const QUEUE: QueueItem[] = [
+  {
+    uri: 'https://www.papytane.com/mp4/airelles.mp4',
+    title: 'Airelles',
+    artist: 'Lunarr Artists',
+    album: 'Field Recordings Vol. 1',
+  },
+  {
+    uri: 'https://www.papytane.com/mp4/bonjour.mp4',
+    title: 'Bonjour',
+    artist: 'Le Chœur',
+    album: 'Morning Sessions',
+  },
+  {
+    uri: 'https://www.papytane.com/mp4/ecureuil.mp4',
+    title: 'L’Écureuil',
+    artist: 'Gaspard',
+    album: 'Animaux',
+  },
+  {
+    uri: 'https://www.papytane.com/mp4/marais.mp4',
+    title: 'Le Marais',
+    artist: 'Les Arts',
+    album: 'City Songs',
+  },
+  {
+    uri: 'https://www.papytane.com/mp4/cygne.mp4',
+    title: 'Le Cygne',
+    artist: 'Florent',
+    album: 'Animaux',
+  },
+];
 
 const resizeModes: VLCResizeMode[] = ['contain', 'cover', 'stretch', 'center'];
 const RESIZE_LABEL: Record<VLCResizeMode, string> = {
@@ -32,15 +70,16 @@ function fmt(sec: number): string {
 
 export default function App() {
   const ref = useRef<VLCPlayerRef>(null);
-  const [uri, setUri] = useState(DEFAULT_URI);
-  const [source, setSource] = useState<VLCPlayerSource>({ uri: DEFAULT_URI });
+  const [uri, setUri] = useState(QUEUE[0].uri);
+  const [source, setSource] = useState<VLCPlayerSource>({ uri: QUEUE[0].uri });
+  const [queueIndex, setQueueIndex] = useState(0);
   const [audioOnly, setAudioOnly] = useState(false);
   const [showNowPlaying, setShowNowPlaying] = useState(true);
   const [continueAudioInBackground, setContinueAudioInBackground] = useState(true);
   const nowPlayingMetadata = {
-    title: 'Example Media',
-    artist: 'Lunarr',
-    album: 'vlc-player demo',
+    title: QUEUE[queueIndex].title,
+    artist: QUEUE[queueIndex].artist,
+    album: QUEUE[queueIndex].album,
     artwork: undefined as string | undefined,
   };
   const [log, setLog] = useState<string[]>([]);
@@ -52,10 +91,18 @@ export default function App() {
   const [dur, setDur] = useState(0);
   const [fullscreen, setFullscreen] = useState(false);
 
+  const goTo = (idx: number) => {
+    if (idx < 0 || idx >= QUEUE.length) return;
+    setQueueIndex(idx);
+    setSource({ uri: QUEUE[idx].uri });
+  };
+  const onRequestNext = () => goTo(queueIndex + 1);
+  const onRequestPrevious = () => goTo(queueIndex - 1);
+
   const push = (line: string) =>
     setLog((prev) => [line, ...prev].slice(0, 60));
 
-  const load = () => setSource({ uri: uri || DEFAULT_URI });
+  const load = () => setSource({ uri: uri || QUEUE[0].uri });
 
   const togglePlay = () => {
     if (playing) {
@@ -148,6 +195,8 @@ export default function App() {
             setTracks({ audio: e.audio, subtitle: e.subtitle });
             push(`onTracks audio=${e.audio.length} subtitle=${e.subtitle.length}`);
           }}
+          onRequestNext={() => { push('RequestNext'); onRequestNext(); }}
+          onRequestPrevious={() => { push('RequestPrevious'); onRequestPrevious(); }}
         />
 
         <View style={styles.overlay} pointerEvents="box-none">
@@ -169,7 +218,9 @@ export default function App() {
           )}
           <View style={styles.transportRow}>
             <Text style={styles.time}>{fmt(pos)}</Text>
+            <Button title="«" onPress={onRequestPrevious} />
             <Button title={playing ? 'Pause' : 'Play'} onPress={togglePlay} />
+            <Button title="»" onPress={onRequestNext} />
             <Button title="-10s" onPress={() => seek(-10)} />
             <Button title="+10s" onPress={() => seek(10)} />
             <Button
@@ -200,6 +251,11 @@ export default function App() {
             <Button title="release" onPress={() => ref.current?.release()} />
           </View>
           <Text style={styles.sectionHeader}>Playback & audio props</Text>
+          <View style={styles.row}>
+            <Button title="prev" onPress={onRequestPrevious} />
+            <Button title={`${queueIndex + 1}/${QUEUE.length} ${QUEUE[queueIndex].title}`} onPress={() => {}} />
+            <Button title="next" onPress={onRequestNext} />
+          </View>
           <View style={styles.row}>
             <Button title="mute" onPress={() => setMuted(!muted)} />
             <Button

@@ -5,6 +5,7 @@ import type {
   VLCMetadataEvent,
   VLCSnapshotEvent,
   VLCMetaEvent,
+  VLCRequestNavigationEvent,
 } from '../specs/VLCPlayerNativeComponent';
 
 export type {
@@ -14,6 +15,7 @@ export type {
   VLCSnapshotEvent,
   VLCMetaEvent,
   VLCTracksEvent,
+  VLCRequestNavigationEvent,
 } from '../specs/VLCPlayerNativeComponent';
 
 /** Hardware decoding mode (matches the official app's single `hardware_acceleration`
@@ -125,6 +127,14 @@ export type VLCPlayerProps = {
   onStopped?: (event: VLCStateChangeEvent) => void;
   onSnapshot?: (event: VLCSnapshotEvent) => void;
   onTracks?: (event: VLCPlayerTracks) => void;
+  /** Called when the user taps the next-track command in system now-playing
+   * controls. The host app owns advancing its queue (e.g. swap `source`).
+   * Providing this enables the next-track button. Omitting it hides it. */
+  onRequestNext?: (event: VLCRequestNavigationEvent) => void;
+  /** Called when the user taps the previous-track command in system
+   * now-playing controls. The host app owns going back in its queue.
+   * Providing this enables the previous-track button. Omitting it hides it. */
+  onRequestPrevious?: (event: VLCRequestNavigationEvent) => void;
 };
 
 export interface VLCPlayerRef {

@@ -134,6 +134,18 @@ using namespace facebook::react;
       return;
     }
 
+    if ([type isEqualToString:@"RequestNext"]) {
+      VLCPlayerEventEmitter::OnRequestNext e = {};
+      emitter.onRequestNext(e);
+      return;
+    }
+
+    if ([type isEqualToString:@"RequestPrevious"]) {
+      VLCPlayerEventEmitter::OnRequestPrevious e = {};
+      emitter.onRequestPrevious(e);
+      return;
+    }
+
     if ([type isEqualToString:@"Opening"]) {
       VLCPlayerEventEmitter::OnLoad loadEvent = {
           .currentTime = [payload[@"currentTime"] doubleValue],
@@ -237,6 +249,8 @@ using namespace facebook::react;
   [_playerView setAudioOnly:newProps.audioOnly];
   [_playerView setContinueAudioInBackground:newProps.continueAudioInBackground];
   [_playerView setShowNowPlaying:newProps.showNowPlaying];
+  [_playerView setNextTrackEnabled:newProps.nextTrackEnabled];
+  [_playerView setPreviousTrackEnabled:newProps.previousTrackEnabled];
 
   const auto &meta = newProps.nowPlayingMetadata;
   NSMutableDictionary *md = [NSMutableDictionary dictionary];

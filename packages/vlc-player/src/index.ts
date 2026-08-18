@@ -14,6 +14,7 @@ export type {
   VLCTracksEvent,
   VLCTrack,
   VLCPlayerTracks,
+  VLCRequestNavigationEvent,
   VLCResizeMode,
 } from './types';
 

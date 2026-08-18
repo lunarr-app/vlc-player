@@ -85,6 +85,8 @@ class VLCPlayerView(context: ThemedReactContext) :
     private var showNowPlaying = true
     private var nowPlayingActive = false
     private var shouldResumePlaying = false
+    private var nextTrackEnabled = false
+    private var previousTrackEnabled = false
 
     private val progressRunnable = object : Runnable {
         override fun run() {
@@ -748,7 +750,17 @@ class VLCPlayerView(context: ThemedReactContext) :
         seekTo(positionMs)
     }
 
-    override fun onSkipBy(deltaMs: Long) {
+    override fun onRequestNext() {
+        if (nextTrackEnabled) emit("onRequestNext", Arguments.createMap())
+        else seekBy(30000L)
+    }
+
+    override fun onRequestPrevious() {
+        if (previousTrackEnabled) emit("onRequestPrevious", Arguments.createMap())
+        else seekBy(-30000L)
+    }
+
+    private fun seekBy(deltaMs: Long) {
         mediaPlayer?.let { seekTo(it.time + deltaMs) }
     }
 
@@ -832,6 +844,14 @@ class VLCPlayerView(context: ThemedReactContext) :
         } else {
             pushNowPlaying()
         }
+    }
+
+    fun setNextTrackEnabled(enabled: Boolean) {
+        nextTrackEnabled = enabled
+    }
+
+    fun setPreviousTrackEnabled(enabled: Boolean) {
+        previousTrackEnabled = enabled
     }
 
     override fun onHostDestroy() {

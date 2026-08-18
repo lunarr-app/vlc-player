@@ -74,6 +74,10 @@ export interface VLCMetaEvent {
   target?: Int32;
 }
 
+/** Empty payload emitted when the user taps next/previous in the system
+ * now-playing controls. The host app owns queue navigation. */
+export interface VLCRequestNavigationEvent {}
+
 /** Payload for `onTracks`, emitted when track info becomes available or via `getTracks()`. */
 export interface VLCTracksEvent {
   /** JSON-encoded `[{ "id": number, "name": string }, ...]` audio tracks. */
@@ -101,6 +105,12 @@ export interface NativeProps extends ViewProps {
   continueAudioInBackground?: boolean;
   showNowPlaying?: boolean;
   nowPlayingMetadata?: NowPlayingMetadata;
+  /** True when the host provides `onRequestNext`. Enables the system
+   * next-track button and hides the 30s skip buttons. */
+  nextTrackEnabled?: boolean;
+  /** True when the host provides `onRequestPrevious`. Enables the system
+   * previous-track button and hides the 30s skip buttons. */
+  previousTrackEnabled?: boolean;
 
   onLoad?: CodegenTypes.DirectEventHandler<VLCProgressEvent> | null;
   onLoadStart?: CodegenTypes.DirectEventHandler<VLCMetaEvent> | null;
@@ -115,6 +125,14 @@ export interface NativeProps extends ViewProps {
   onStopped?: CodegenTypes.DirectEventHandler<VLCStateChangeEvent> | null;
   onSnapshot?: CodegenTypes.DirectEventHandler<VLCSnapshotEvent> | null;
   onTracks?: CodegenTypes.DirectEventHandler<VLCTracksEvent> | null;
+  /** Emitted when the user taps the next-track command in system now-playing
+   * controls. The host app is responsible for advancing its own queue. No-op
+   * if the app does nothing. */
+  onRequestNext?: CodegenTypes.DirectEventHandler<VLCRequestNavigationEvent> | null;
+  /** Emitted when the user taps the previous-track command in system
+   * now-playing controls. The host app is responsible for going back in its
+   * own queue. No-op if the app does nothing. */
+  onRequestPrevious?: CodegenTypes.DirectEventHandler<VLCRequestNavigationEvent> | null;
 }
 
 export interface NativeCommands {

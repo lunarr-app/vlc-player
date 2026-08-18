@@ -46,10 +46,10 @@ class NowPlayingService : Service() {
                     listener?.onSeekTo(pos)
                 }
                 override fun onSkipToNext() {
-                    listener?.onSkipBy(30000L)
+                    listener?.onRequestNext()
                 }
                 override fun onSkipToPrevious() {
-                    listener?.onSkipBy(-30000L)
+                    listener?.onRequestPrevious()
                 }
             })
         }
@@ -251,5 +251,8 @@ interface NowPlayingListener {
     fun onPlay()
     fun onPause()
     fun onSeekTo(positionMs: Long)
-    fun onSkipBy(deltaMs: Long)
+    /** User tapped next in the system now-playing controls. */
+    fun onRequestNext()
+    /** User tapped previous in the system now-playing controls. */
+    fun onRequestPrevious()
 }

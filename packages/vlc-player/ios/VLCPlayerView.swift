@@ -32,6 +32,8 @@ public final class VLCPlayerView: UIView, VLCMediaPlayerDelegate, VLCMediaDelega
     private var nowPlayingOverride: [String: Any]?
     private var showNowPlaying: Bool = true
     private var controlsRegistered = false
+    private var nextTrackEnabled = false
+    private var previousTrackEnabled = false
     private var equalizer: VLCAudioEqualizer?
     private var resizeMode = "contain"
     // Retained so the C pointer passed to MobileVLCKit's videoAspectRatio stays
@@ -307,6 +309,31 @@ public final class VLCPlayerView: UIView, VLCMediaPlayerDelegate, VLCMediaDelega
         } else {
             clearNowPlayingInfo()
         }
+    }
+
+    /// Enables the system next-track command when the host app handles
+    /// `onRequestNext`. When either navigation handler is set, the skip
+    /// (30s) buttons are hidden so iOS shows next/previous, matching the official
+    /// app's behavior for a media list.
+    public func setNextTrackEnabled(_ enabled: Bool) {
+        guard nextTrackEnabled != enabled else { return }
+        nextTrackEnabled = enabled
+        updateNowPlayingCommandAvailability()
+    }
+
+    public func setPreviousTrackEnabled(_ enabled: Bool) {
+        guard previousTrackEnabled != enabled else { return }
+        previousTrackEnabled = enabled
+        updateNowPlayingCommandAvailability()
+    }
+
+    private func updateNowPlayingCommandAvailability() {
+        let cc = MPRemoteCommandCenter.shared()
+        let navigationEnabled = nextTrackEnabled || previousTrackEnabled
+        cc.skipForwardCommand.isEnabled = !navigationEnabled
+        cc.skipBackwardCommand.isEnabled = !navigationEnabled
+        cc.nextTrackCommand.isEnabled = nextTrackEnabled
+        cc.previousTrackCommand.isEnabled = previousTrackEnabled
     }
 
     // MARK: - Equalizer
@@ -614,11 +641,21 @@ public final class VLCPlayerView: UIView, VLCMediaPlayerDelegate, VLCMediaDelega
             self?.seekRelative(-30)
             return .success
         }
+        cc.nextTrackCommand.addTarget { [weak self] _ in
+            self?.onEvent?("RequestNext", [:])
+            return .success
+        }
+        cc.previousTrackCommand.addTarget { [weak self] _ in
+            self?.onEvent?("RequestPrevious", [:])
+            return .success
+        }
         cc.changePlaybackPositionCommand.addTarget { [weak self] event in
             guard let e = event as? MPChangePlaybackPositionCommandEvent else { return .commandFailed }
             self?.seek(to: e.positionTime)
             return .success
         }
+
+        updateNowPlayingCommandAvailability()
     }
 
     private func seekRelative(_ seconds: Double) {

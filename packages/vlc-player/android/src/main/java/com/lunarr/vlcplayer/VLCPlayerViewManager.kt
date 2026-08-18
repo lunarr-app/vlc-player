@@ -78,6 +78,14 @@ class VLCPlayerViewManager(private val reactContext: ReactApplicationContext) :
         view.setShowNowPlaying(value)
     }
 
+    override fun setNextTrackEnabled(view: VLCPlayerView, value: Boolean) {
+        view.setNextTrackEnabled(value)
+    }
+
+    override fun setPreviousTrackEnabled(view: VLCPlayerView, value: Boolean) {
+        view.setPreviousTrackEnabled(value)
+    }
+
     override fun setNowPlayingMetadata(view: VLCPlayerView, value: ReadableMap?) {
         view.setNowPlayingMetadata(value)
     }
