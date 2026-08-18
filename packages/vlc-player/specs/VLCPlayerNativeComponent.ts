@@ -101,7 +101,6 @@ export interface NativeProps extends ViewProps {
   autoAspectRatio?: boolean;
   videoAspectRatio?: string;
   progressUpdateInterval?: Int32;
-  audioOnly?: boolean;
   continueAudioInBackground?: boolean;
   showNowPlaying?: boolean;
   nowPlayingMetadata?: NowPlayingMetadata;

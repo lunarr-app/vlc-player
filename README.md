@@ -116,7 +116,7 @@ These map to codegen `dispatchCommand` calls (Fabric commands). There is no
 
 `source`, `autoplay`, `paused`, `muted`, `repeat`, `rate`, `resizeMode`,
 `volume`, `autoAspectRatio`, `videoAspectRatio`, `progressUpdateInterval`,
-`audioOnly`, `continueAudioInBackground`, `showNowPlaying`, `nowPlayingMetadata`, plus the event callbacks: `onLoad`, `onLoadStart`,
+`continueAudioInBackground`, `showNowPlaying`, `nowPlayingMetadata`, plus the event callbacks: `onLoad`, `onLoadStart`,
 `onProgress`, `onSeek`, `onPlaying`, `onPaused`, `onEnd`, `onError`, `onBuffer`, `onMetadata`, `onStopped`,
 `onSnapshot`, `onTracks`.
 
@@ -169,7 +169,6 @@ When provided they're used as the instance's init arguments verbatim (no merging
 - Hide subtitles either for the whole source (`mediaOptions: [':sub-language=none']`,
   see above) or at runtime via `selectSubtitleTrack(-1)`.
 - Load external subtitles with `setSubtitleFile(path)` at any time.
-- `audioOnly` renders audio without the video surface.
 - `volume` accepts `0` to `200`, where `100` is normal loudness and values above
   `100` boost the audio up to `200` (2x), matching the official apps' audio
   boost. On Android the maximum applies to libvlc's own volume scale. On iOS the

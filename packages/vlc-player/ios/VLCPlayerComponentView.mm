@@ -246,7 +246,6 @@ using namespace facebook::react;
   [_playerView setVolume:(int)newProps.volume];
   [_playerView setAutoAspectRatio:newProps.autoAspectRatio];
   [_playerView setProgressUpdateInterval:newProps.progressUpdateInterval];
-  [_playerView setAudioOnly:newProps.audioOnly];
   [_playerView setContinueAudioInBackground:newProps.continueAudioInBackground];
   [_playerView setShowNowPlaying:newProps.showNowPlaying];
   [_playerView setNextTrackEnabled:newProps.nextTrackEnabled];

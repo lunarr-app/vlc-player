@@ -127,7 +127,7 @@ export default forwardRef<VLCPlayerRef, VLCPlayerProps>(function VLCPlayer(props
     },
   }));
 
-  const { source, autoplay, audioOnly, onLoad, onLoadStart, onProgress, onSeek, onPlaying, onPaused, onEnd, onError, onBuffer, onMetadata, onStopped, onSnapshot, onTracks, onRequestNext, onRequestPrevious, ...rest } = props;
+  const { source, autoplay, onLoad, onLoadStart, onProgress, onSeek, onPlaying, onPaused, onEnd, onError, onBuffer, onMetadata, onStopped, onSnapshot, onTracks, onRequestNext, onRequestPrevious, ...rest } = props;
   const nativeSource: VLCPlayerSource = { ...source };
 
   if (autoplay !== undefined && nativeSource.autoplay === undefined) {
@@ -165,7 +165,6 @@ export default forwardRef<VLCPlayerRef, VLCPlayerProps>(function VLCPlayer(props
       onRequestPrevious={toNativeEvent<VLCRequestNavigationEvent>(onRequestPrevious)}
       nextTrackEnabled={onRequestNext != null}
       previousTrackEnabled={onRequestPrevious != null}
-      audioOnly={audioOnly}
       {...rest}
     />
   );

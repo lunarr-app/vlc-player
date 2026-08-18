@@ -64,11 +64,6 @@ class VLCPlayerView(context: ThemedReactContext) :
     private var resizeMode = "contain"
     private var currentViewId = -1
     private var progressIntervalMs: Long = 0
-    private var audioOnly = false
-    // Whether the current player was built with the `:no-video` media option
-    // (true audio-only build). A live `setVideoTrackEnabled` toggle is only
-    // possible when the player was built with video output.
-    private var builtAudioOnly = false
     private var equalizer: MediaPlayer.Equalizer? = null
     private var audioFocusGranted = false
     private var resumeAfterFocusLoss = false
@@ -329,12 +324,6 @@ class VLCPlayerView(context: ThemedReactContext) :
             }
             // hwEnabled < 0 => automatic, leave libvlc to pick its default.
 
-            if (audioOnly) {
-                // Fully disable video output, matching how VLCOptions handles
-                // audio-only streams (official app adds ":no-video").
-                media.addOption(":no-video")
-            }
-
             mediaOptions?.let { optsArr ->
                 for (i in 0 until optsArr.size()) {
                     optsArr.getString(i)?.let { media.addOption(it) }
@@ -344,16 +333,10 @@ class VLCPlayerView(context: ThemedReactContext) :
             player.media = media
             player.scale = 0f
 
-            if (!audioOnly) {
-                if (!vout.areViewsAttached()) {
-                    vout.setVideoSurface(surfaceTexture)
-                    vout.attachViews(newVideoLayoutListener)
-                }
+            if (!vout.areViewsAttached()) {
+                vout.setVideoSurface(surfaceTexture)
+                vout.attachViews(newVideoLayoutListener)
             }
-
-            // Record how this player was built so `setAudioOnly` can decide
-            // between a live track toggle and a rebuild.
-            builtAudioOnly = audioOnly
 
             // Apply the resize mode only once the vout views exist, matching how
             // the official app recomputes the surface geometry on layout.
@@ -814,18 +797,6 @@ class VLCPlayerView(context: ThemedReactContext) :
         mediaPlayer?.setSpuDelay(micros)
     }
 
-    fun setAudioOnly(enabled: Boolean) {
-        if (audioOnly == enabled) return
-        audioOnly = enabled
-        // Hide the player view when audio-only so any already-decoded or stale
-        // frame is not shown (the player container is black). Keep the view
-        // present (INVISIBLE) so layout is unchanged. No rebuild, so playback
-        // position is preserved. Disable the video track too so rendering
-        // stops while hidden.
-        mediaPlayer?.setVideoTrackEnabled(!enabled)
-        visibility = if (enabled) View.INVISIBLE else View.VISIBLE
-    }
-
     fun setContinueAudioInBackground(enabled: Boolean) {
         continueAudioInBackground = enabled
         shouldResumePlaying = false
@@ -910,7 +881,7 @@ class VLCPlayerView(context: ThemedReactContext) :
             // its position) survives, so re-attach the new texture instead of
             // rebuilding from 0. Audio-only media keeps no video output.
             val vout = player.vlcVout
-            if (!audioOnly && !vout.areViewsAttached()) {
+            if (!vout.areViewsAttached()) {
                 vout.setVideoSurface(surface)
                 vout.attachViews(newVideoLayoutListener)
             }

@@ -66,10 +66,6 @@ class VLCPlayerViewManager(private val reactContext: ReactApplicationContext) :
         view.setProgressUpdateInterval(value.toLong())
     }
 
-    override fun setAudioOnly(view: VLCPlayerView, value: Boolean) {
-        view.setAudioOnly(value)
-    }
-
     override fun setContinueAudioInBackground(view: VLCPlayerView, value: Boolean) {
         view.setContinueAudioInBackground(value)
     }

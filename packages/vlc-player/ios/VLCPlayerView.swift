@@ -26,8 +26,6 @@ public final class VLCPlayerView: UIView, VLCMediaPlayerDelegate, VLCMediaDelega
     private var preVolume: Int = 100
     private var progressIntervalMs: Int = 0
     private var progressTimer: Timer?
-    private var audioOnly: Bool = false
-    private var savedVideoTrackIndex: Int32 = -1
     private var continueAudioInBackground: Bool = true
     private var shouldResumePlaying = false
     private var nowPlayingOverride: [String: Any]?
@@ -278,21 +276,6 @@ public final class VLCPlayerView: UIView, VLCMediaPlayerDelegate, VLCMediaDelega
 
     public func setSubtitleDelay(_ micros: Int64) {
         player?.currentVideoSubTitleDelay = NSInteger(micros)
-    }
-
-    public func setAudioOnly(_ enabled: Bool) {
-        guard audioOnly != enabled else { return }
-        audioOnly = enabled
-        // Keep the drawable attached (as the official app does). We only toggle
-        // the video track. libvlc drives actual rendering.
-        guard let p = player else { return }
-        if enabled {
-            savedVideoTrackIndex = p.currentVideoTrackIndex
-            p.currentVideoTrackIndex = -1
-        } else {
-            p.currentVideoTrackIndex = savedVideoTrackIndex >= 0 ? savedVideoTrackIndex : 0
-            savedVideoTrackIndex = 0
-        }
     }
 
     public func setContinueAudioInBackground(_ enabled: Bool) {

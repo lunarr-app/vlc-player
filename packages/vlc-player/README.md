@@ -62,7 +62,7 @@ export default function Player() {
 **Props:** `source`, `autoplay`, `paused`, `muted`, `repeat`, `rate`,
 `resizeMode`, `volume` (0–200, above 100 is boost), `autoAspectRatio`,
 `videoAspectRatio`, `progressUpdateInterval` (ms, `0` = libvlc cadence),
-`audioOnly`, `continueAudioInBackground`, `showNowPlaying`,
+`continueAudioInBackground`, `showNowPlaying`,
 `nowPlayingMetadata`.
 
 **Events:** `onLoad`, `onLoadStart`, `onProgress`, `onSeek`, `onPlaying`,

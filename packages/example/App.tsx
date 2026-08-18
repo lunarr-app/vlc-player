@@ -73,7 +73,6 @@ export default function App() {
   const [uri, setUri] = useState(QUEUE[0].uri);
   const [source, setSource] = useState<VLCPlayerSource>({ uri: QUEUE[0].uri });
   const [queueIndex, setQueueIndex] = useState(0);
-  const [audioOnly, setAudioOnly] = useState(false);
   const [showNowPlaying, setShowNowPlaying] = useState(true);
   const [continueAudioInBackground, setContinueAudioInBackground] = useState(true);
   const nowPlayingMetadata = {
@@ -158,7 +157,6 @@ export default function App() {
           autoplay
           paused={!playing}
           muted={muted}
-          audioOnly={audioOnly}
           showNowPlaying={showNowPlaying}
           continueAudioInBackground={continueAudioInBackground}
           nowPlayingMetadata={nowPlayingMetadata}
@@ -261,10 +259,6 @@ export default function App() {
             <Button
               title={`now playing ${showNowPlaying ? 'on' : 'off'}`}
               onPress={() => setShowNowPlaying(!showNowPlaying)}
-            />
-            <Button
-              title={`audioOnly ${audioOnly ? 'on' : 'off'}`}
-              onPress={() => setAudioOnly(!audioOnly)}
             />
             <Button
               title={`bg audio ${continueAudioInBackground ? 'on' : 'off'}`}

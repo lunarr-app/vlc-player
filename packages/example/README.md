@@ -36,7 +36,7 @@ pnpm example:androidtv  # Android TV -> EXPO_TV prebuild + expo run:android
 ## What it tests
 
 - Playback props: `autoplay`, `paused`, `muted`, `repeat`, `rate`, `volume`,
-  `audioOnly`, `continueAudioInBackground`, `resizeMode`, `autoAspectRatio`, `videoAspectRatio`,
+  `continueAudioInBackground`, `resizeMode`, `autoAspectRatio`, `videoAspectRatio`,
   `progressUpdateInterval`, `nowPlayingMetadata`.
 - Imperative API: `play`, `pause`, `seek`, `snapshot`, `release`,
   `getMetadata`, `getTracks`, `selectAudioTrack`, `selectSubtitleTrack`,

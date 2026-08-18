@@ -89,9 +89,6 @@ export type VLCPlayerProps = {
   videoAspectRatio?: string;
   /** ms between `onProgress` emissions while playing (0 uses libvlc cadence). */
   progressUpdateInterval?: number;
-  /** Render audio without the video surface. On Android, switching from
-   * audio-only back to video reloads the media (playback restarts). */
-  audioOnly?: boolean;
   /** Keep playback running when the app is backgrounded. Default true,
    * regardless of media type. When false, playback pauses on background and
    * auto-resumes when the app returns to the foreground. */

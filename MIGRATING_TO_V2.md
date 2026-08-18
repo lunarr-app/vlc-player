@@ -207,7 +207,7 @@ player automatically.
 
 - Props: `source`, `autoplay`, `paused`, `muted`, `repeat`, `rate`,
   `resizeMode`, `volume` (0 to 200), `autoAspectRatio`, `videoAspectRatio`,
-  `progressUpdateInterval` (ms, 0 = libvlc cadence), `audioOnly`,
+  `progressUpdateInterval` (ms, 0 = libvlc cadence),
   `continueAudioInBackground`, `nowPlayingMetadata`.
 - Handlers: `onLoad`, `onLoadStart`, `onProgress`, `onSeek`, `onPlaying`,
   `onPaused`, `onEnd`, `onError`, `onBuffer`, `onMetadata`, `onStopped`,
