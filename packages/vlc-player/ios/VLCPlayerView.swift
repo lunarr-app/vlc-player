@@ -160,6 +160,11 @@ public final class VLCPlayerView: UIView, VLCMediaPlayerDelegate, VLCMediaDelega
             media.addOption(":avcodec-hw=none")
         }
 
+        if audioOnly {
+            // Disable video output for audio-only, mirroring the official app.
+            media.addOption(":no-video")
+        }
+
         media.parse()
         newPlayer.media = media
         player = newPlayer
