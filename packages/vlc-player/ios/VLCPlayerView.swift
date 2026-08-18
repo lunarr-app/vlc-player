@@ -28,6 +28,7 @@ public final class VLCPlayerView: UIView, VLCMediaPlayerDelegate, VLCMediaDelega
     private var progressTimer: Timer?
     private var continueAudioInBackground: Bool = true
     private var shouldResumePlaying = false
+    private var wasPlayingBeforeInterruption = false
     private var nowPlayingOverride: [String: Any]?
     private var showNowPlaying: Bool = true
     private var controlsRegistered = false
@@ -68,6 +69,14 @@ public final class VLCPlayerView: UIView, VLCMediaPlayerDelegate, VLCMediaDelega
             self, selector: #selector(willEnterForeground),
             name: UIApplication.willEnterForegroundNotification, object: nil
         )
+        center.addObserver(
+            self, selector: #selector(handleInterruption),
+            name: AVAudioSession.interruptionNotification, object: nil
+        )
+        center.addObserver(
+            self, selector: #selector(handleRouteChange),
+            name: AVAudioSession.routeChangeNotification, object: nil
+        )
     }
 
     @objc private func willResignActive(_ note: Notification) {
@@ -86,6 +95,47 @@ public final class VLCPlayerView: UIView, VLCMediaPlayerDelegate, VLCMediaDelega
         if shouldResumePlaying {
             shouldResumePlaying = false
             play()
+        }
+    }
+
+    @objc private func handleInterruption(_ note: Notification) {
+        // Mirror the official app: pause on interruption (Siri, call, alarm,
+        // notification) and resume only when the system says playback can
+        // resume (e.g. Siri ended). Phone calls end without `.shouldResume`,
+        // so playback stays paused.
+        guard let info = note.userInfo,
+              let rawType = info[AVAudioSessionInterruptionTypeKey] as? UInt,
+              let type = AVAudioSession.InterruptionType(rawValue: rawType) else { return }
+        switch type {
+        case .began:
+            wasPlayingBeforeInterruption = !isPaused
+            if !isPaused {
+                setPaused(true)
+            }
+        case .ended:
+            guard wasPlayingBeforeInterruption else { return }
+            wasPlayingBeforeInterruption = false
+            let rawOptions = info[AVAudioSessionInterruptionOptionKey] as? UInt ?? 0
+            guard AVAudioSession.InterruptionOptions(rawValue: rawOptions).contains(.shouldResume) else { return }
+            try? AVAudioSession.sharedInstance().setActive(true)
+            if isPaused {
+                play()
+            }
+        @unknown default:
+            break
+        }
+    }
+
+    @objc private func handleRouteChange(_ note: Notification) {
+        // Pause when the previous audio device is gone (headphones unplugged),
+        // matching the official app, so playback does not blast through
+        // speakers unexpectedly.
+        guard let info = note.userInfo,
+              let rawReason = info[AVAudioSessionRouteChangeReasonKey] as? UInt,
+              let reason = AVAudioSession.RouteChangeReason(rawValue: rawReason),
+              reason == .oldDeviceUnavailable else { return }
+        if !isPaused {
+            setPaused(true)
         }
     }
 
