@@ -139,10 +139,13 @@ public final class VLCPlayerView: UIView, VLCMediaPlayerDelegate, VLCMediaDelega
 
         let media: VLCMedia
         if let url = URL(string: uri), let scheme = url.scheme, !scheme.isEmpty, scheme != "file" {
-            // MRLs with a scheme (http/https/rtsp/...) are remote sources.
-            // Treating them as file paths fails to open, so use `VLCMedia(url:)`.
+            // Real remote MRLs (http/https/rtsp/...) open by URL.
             media = VLCMedia(url: url)
+        } else if let fileURL = URL(string: uri), fileURL.isFileURL {
+            // Strip the file:// prefix or libvlc cannot open local audio.
+            media = VLCMedia(path: fileURL.path)
         } else {
+            // Bare filesystem path (e.g. /private/var/...).
             media = VLCMedia(path: uri)
         }
         media.delegate = self
