@@ -815,21 +815,15 @@ class VLCPlayerView(context: ThemedReactContext) :
     }
 
     fun setAudioOnly(enabled: Boolean) {
+        if (audioOnly == enabled) return
         audioOnly = enabled
-        val player = mediaPlayer ?: return
-        if (!builtAudioOnly) {
-            // Opened with video output: toggle the video track live, like the
-            // official app's `setVideoTrackEnabled` path (and iOS switching
-            // its drawable). Works in both directions.
-            player.setVideoTrackEnabled(!enabled)
-        } else if (!enabled && player.getVideoTracksCount() > 0) {
-            // Opened with `:no-video` and no vout surface, so a live toggle
-            // cannot restore video: re-open the media without that option,
-            // matching the official app's `switchToVideo`. Restarts playback.
-            // Guarded like the official `canSwitchToVideo` (media has video).
-            val wasPlaying = player.isPlaying
-            createPlayer(autoplay = wasPlaying, isResume = true)
-        }
+        // Hide the player view when audio-only so any already-decoded or stale
+        // frame is not shown (the player container is black). Keep the view
+        // present (INVISIBLE) so layout is unchanged. No rebuild, so playback
+        // position is preserved. Disable the video track too so rendering
+        // stops while hidden.
+        mediaPlayer?.setVideoTrackEnabled(!enabled)
+        visibility = if (enabled) View.INVISIBLE else View.VISIBLE
     }
 
     fun setContinueAudioInBackground(enabled: Boolean) {

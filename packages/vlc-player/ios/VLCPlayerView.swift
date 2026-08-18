@@ -27,6 +27,7 @@ public final class VLCPlayerView: UIView, VLCMediaPlayerDelegate, VLCMediaDelega
     private var progressIntervalMs: Int = 0
     private var progressTimer: Timer?
     private var audioOnly: Bool = false
+    private var savedVideoTrackIndex: Int32 = -1
     private var continueAudioInBackground: Bool = true
     private var shouldResumePlaying = false
     private var nowPlayingOverride: [String: Any]?
@@ -278,13 +279,23 @@ public final class VLCPlayerView: UIView, VLCMediaPlayerDelegate, VLCMediaDelega
     }
 
     public func setAudioOnly(_ enabled: Bool) {
+        guard audioOnly != enabled else { return }
         audioOnly = enabled
-        if let p = player {
-            if enabled {
-                p.drawable = nil
-            } else {
-                p.drawable = self
-            }
+        guard let p = player else { return }
+        if enabled {
+            // Turning off video: drop the drawable and disable the video track
+            // so video output (and rendering) actually stops. `drawable` alone
+            // does not tear down the running renderer. Save the active track
+            // so it can be restored; it may be -1 (auto) while playing.
+            savedVideoTrackIndex = p.currentVideoTrackIndex
+            p.currentVideoTrackIndex = -1
+            p.drawable = nil
+        } else {
+            // Restore video: re-apply the drawable and re-select a video track.
+            // If there was no explicit selection (auto), pick the first track.
+            p.drawable = self
+            p.currentVideoTrackIndex = savedVideoTrackIndex >= 0 ? savedVideoTrackIndex : 0
+            savedVideoTrackIndex = 0
         }
     }
 
