@@ -45,18 +45,12 @@ public final class VLCPlayerView: UIView, VLCMediaPlayerDelegate, VLCMediaDelega
         super.init(frame: frame)
         backgroundColor = .black
         setupLifecycleObservers()
-        if showNowPlaying {
-            setupNowPlayingControls()
-        }
     }
 
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
         backgroundColor = .black
         setupLifecycleObservers()
-        if showNowPlaying {
-            setupNowPlayingControls()
-        }
     }
 
     deinit {
@@ -131,9 +125,9 @@ public final class VLCPlayerView: UIView, VLCMediaPlayerDelegate, VLCMediaDelega
         let hwEnabled = (src["hwDecoderEnabled"] as? NSNumber)?.intValue ?? -1
 
         let newPlayer = VLCMediaPlayer(options: initOptions)
-        if !audioOnly {
-            newPlayer.drawable = self
-        }
+        // Always attach the drawable (as the official app does). libvlc picks
+        // audio-only from the stream. Detaching the drawable stalls iOS audio.
+        newPlayer.drawable = self
         newPlayer.delegate = self
         newPlayer.scaleFactor = 0
 
@@ -174,6 +168,11 @@ public final class VLCPlayerView: UIView, VLCMediaPlayerDelegate, VLCMediaDelega
     // MARK: - Playback controls
 
     public func play() {
+        // Mirror the official app: register lock-screen / Control Center
+        // controls and own the audio route when playback actually starts.
+        if showNowPlaying {
+            setupNowPlayingControls()
+        }
         player?.play()
         isPaused = false
         startProgressTimer()
@@ -284,19 +283,13 @@ public final class VLCPlayerView: UIView, VLCMediaPlayerDelegate, VLCMediaDelega
     public func setAudioOnly(_ enabled: Bool) {
         guard audioOnly != enabled else { return }
         audioOnly = enabled
+        // Keep the drawable attached (as the official app does). We only toggle
+        // the video track. libvlc drives actual rendering.
         guard let p = player else { return }
         if enabled {
-            // Turning off video: drop the drawable and disable the video track
-            // so video output (and rendering) actually stops. `drawable` alone
-            // does not tear down the running renderer. Save the active track
-            // so it can be restored; it may be -1 (auto) while playing.
             savedVideoTrackIndex = p.currentVideoTrackIndex
             p.currentVideoTrackIndex = -1
-            p.drawable = nil
         } else {
-            // Restore video: re-apply the drawable and re-select a video track.
-            // If there was no explicit selection (auto), pick the first track.
-            p.drawable = self
             p.currentVideoTrackIndex = savedVideoTrackIndex >= 0 ? savedVideoTrackIndex : 0
             savedVideoTrackIndex = 0
         }
@@ -622,8 +615,9 @@ public final class VLCPlayerView: UIView, VLCMediaPlayerDelegate, VLCMediaDelega
     /// system for continuous audio (the host app must declare `audio` in
     /// `UIBackgroundModes` for background playback to survive backgrounding).
     private func setupNowPlayingControls() {
-        // Register the remote-command targets only once so re-enabling
-        // `showNowPlaying` mid-playback does not stack duplicate handlers.
+        // Register the lock-screen / Control Center targets exactly like the
+        // official app: once per playback session, target kept on `self` so
+        // `removeTarget(self)` unpins them all when playback ends.
         guard !controlsRegistered else { return }
         controlsRegistered = true
 
@@ -632,44 +626,62 @@ public final class VLCPlayerView: UIView, VLCMediaPlayerDelegate, VLCMediaDelega
         try? session.setActive(true)
 
         let cc = MPRemoteCommandCenter.shared()
-        cc.playCommand.addTarget { [weak self] _ in
-            self?.play()
-            return .success
-        }
-        cc.pauseCommand.addTarget { [weak self] _ in
-            self?.pause()
-            return .success
-        }
-        cc.togglePlayPauseCommand.addTarget { [weak self] _ in
-            guard let self = self else { return .commandFailed }
-            if self.isPaused { self.play() } else { self.pause() }
-            return .success
-        }
         cc.skipForwardCommand.preferredIntervals = [30]
-        cc.skipForwardCommand.addTarget { [weak self] _ in
-            self?.seekRelative(30)
-            return .success
-        }
         cc.skipBackwardCommand.preferredIntervals = [30]
-        cc.skipBackwardCommand.addTarget { [weak self] _ in
-            self?.seekRelative(-30)
-            return .success
-        }
-        cc.nextTrackCommand.addTarget { [weak self] _ in
-            self?.onEvent?("RequestNext", [:])
-            return .success
-        }
-        cc.previousTrackCommand.addTarget { [weak self] _ in
-            self?.onEvent?("RequestPrevious", [:])
-            return .success
-        }
-        cc.changePlaybackPositionCommand.addTarget { [weak self] event in
-            guard let e = event as? MPChangePlaybackPositionCommandEvent else { return .commandFailed }
-            self?.seek(to: e.positionTime)
-            return .success
+        for command in [
+            cc.playCommand,
+            cc.pauseCommand,
+            cc.togglePlayPauseCommand,
+            cc.skipForwardCommand,
+            cc.skipBackwardCommand,
+            cc.nextTrackCommand,
+            cc.previousTrackCommand,
+            cc.changePlaybackPositionCommand,
+        ] {
+            command.addTarget(self, action: #selector(handleRemoteCommand(_:)))
         }
 
         updateNowPlayingCommandAvailability()
+    }
+
+    /// Single handler for every Control Center / lock-screen command, mirroring
+    /// the official app's `remoteCommandEvent`.
+    @objc private func handleRemoteCommand(_ event: MPRemoteCommandEvent) -> MPRemoteCommandHandlerStatus {
+        let cc = MPRemoteCommandCenter.shared()
+        if event.command == cc.playCommand {
+            play()
+            return .success
+        }
+        if event.command == cc.pauseCommand {
+            pause()
+            return .success
+        }
+        if event.command == cc.togglePlayPauseCommand {
+            if isPaused { play() } else { pause() }
+            return .success
+        }
+        if event.command == cc.skipForwardCommand {
+            seekRelative(30)
+            return .success
+        }
+        if event.command == cc.skipBackwardCommand {
+            seekRelative(-30)
+            return .success
+        }
+        if event.command == cc.nextTrackCommand {
+            onEvent?("RequestNext", [:])
+            return .success
+        }
+        if event.command == cc.previousTrackCommand {
+            onEvent?("RequestPrevious", [:])
+            return .success
+        }
+        if event.command == cc.changePlaybackPositionCommand {
+            guard let e = event as? MPChangePlaybackPositionCommandEvent else { return .commandFailed }
+            seek(to: e.positionTime)
+            return .success
+        }
+        return .commandFailed
     }
 
     private func seekRelative(_ seconds: Double) {
@@ -866,6 +878,28 @@ public final class VLCPlayerView: UIView, VLCMediaPlayerDelegate, VLCMediaDelega
         if let p = player {
             p.stop()
             player = nil
+        }
+        // Unpin the Control Center / lock-screen controls so a released player
+        // can't be driven or shown again, mirroring the official app's
+        // `playbackStopped` (which clears now-playing and removes its targets).
+        removeNowPlayingControls()
+    }
+
+    private func removeNowPlayingControls() {
+        guard controlsRegistered else { return }
+        controlsRegistered = false
+        let cc = MPRemoteCommandCenter.shared()
+        for command in [
+            cc.playCommand,
+            cc.pauseCommand,
+            cc.togglePlayPauseCommand,
+            cc.skipForwardCommand,
+            cc.skipBackwardCommand,
+            cc.nextTrackCommand,
+            cc.previousTrackCommand,
+            cc.changePlaybackPositionCommand,
+        ] {
+            command.removeTarget(self)
         }
     }
 }
