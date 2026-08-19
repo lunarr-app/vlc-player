@@ -1,6 +1,6 @@
 {
   "name": "vlc-player-monorepo",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "private": true,
   "description": "Monorepo for @lunarr/vlc-player (React Native, New Architecture) and its example app",
   "packageManager": "pnpm@11.22.0",

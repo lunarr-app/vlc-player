@@ -1,6 +1,6 @@
 {
   "name": "@lunarr/vlc-player",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "VLC media player for React Native (iOS, tvOS, Android & Android TV)",
   "main": "src/index.ts",
   "react-native": "src/index.ts",
