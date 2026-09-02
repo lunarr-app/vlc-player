@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.1] - 2026-09-02
+
+### Fixed
+
+- Fix ghost audio after exiting the player screen: released players no longer restart from stale source or resume state on iOS (Fabric view recycling) or Android (surface re-attach, host resume)
+- iOS applies props only when they change so re-renders cannot resume a paused player
+- Omitted props now resolve to the documented defaults (`rate` 1, `volume` 100, `continueAudioInBackground` true, `showNowPlaying` true, source `autoplay` true) instead of reaching native as `0` / `false`
+
+### Changed
+
+- Document `rate` and `volume` defaults in the README and type docs
+- Remove the dead `isResume` parameter from the Android player
+
 ## [2.1.0] - 2026-08-19
 
 ### Added
