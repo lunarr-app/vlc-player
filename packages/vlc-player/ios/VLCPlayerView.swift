@@ -26,7 +26,8 @@ public final class VLCPlayerView: UIView, VLCMediaPlayerDelegate, VLCMediaDelega
     private var preVolume: Int = 100
     private var progressIntervalMs: Int = 0
     private var progressTimer: Timer?
-    private var continueAudioInBackground: Bool = true
+    // Initials must match the codegen defaults (false) for updateProps diffing.
+    private var continueAudioInBackground: Bool = false
     private var shouldResumePlaying = false
     private var wasPlayingBeforeInterruption = false
     private var nowPlayingOverride: [String: Any]?
@@ -80,6 +81,8 @@ public final class VLCPlayerView: UIView, VLCMediaPlayerDelegate, VLCMediaDelega
     }
 
     @objc private func willResignActive(_ note: Notification) {
+        // Recycled views keep their observers, skip released players.
+        guard player != nil else { return }
         // Pause on resign only when the host opts out of background playback, so
         // playback keeps running in the background by default regardless of
         // media type, matching the official app.
@@ -90,6 +93,7 @@ public final class VLCPlayerView: UIView, VLCMediaPlayerDelegate, VLCMediaDelega
     }
 
     @objc private func willEnterForeground(_ note: Notification) {
+        guard player != nil else { return }
         // Resume only if we paused the playback for backgrounding, so a
         // user-initiated pause is never overridden.
         if shouldResumePlaying {
@@ -164,7 +168,7 @@ public final class VLCPlayerView: UIView, VLCMediaPlayerDelegate, VLCMediaDelega
         guard let uri = src["uri"] as? String, !uri.isEmpty else { return }
 
         let initOptions = src["initOptions"] as? [String] ?? []
-        let autoplay = (src["autoplay"] as? Bool) ?? false
+        let autoplay = (src["autoplay"] as? Bool) ?? true
         let mediaOptions = src["mediaOptions"] as? [String] ?? []
         // Hardware decoding mode: -1 automatic (let VLCKit choose), 0 disabled,
         // >= 1 force VideoToolbox. iOS collapses decode-only (1) and full (2)
@@ -207,7 +211,8 @@ public final class VLCPlayerView: UIView, VLCMediaPlayerDelegate, VLCMediaDelega
         player = newPlayer
         applyResizeMode()
 
-        if autoplay {
+        // Respect the paused prop: a paused mount must not autoplay.
+        if autoplay && !isPaused {
             play()
         }
         onEvent?("LoadStart", [:])
@@ -233,6 +238,9 @@ public final class VLCPlayerView: UIView, VLCMediaPlayerDelegate, VLCMediaDelega
     }
 
     public func setPaused(_ paused: Bool) {
+        // Record the intent even with no player yet (source may arrive after
+        // this call) so the build path cannot autoplay a paused mount.
+        isPaused = paused
         if player != nil {
             if paused { pause() } else { play() }
         } else if let src = source {
@@ -912,6 +920,10 @@ public final class VLCPlayerView: UIView, VLCMediaPlayerDelegate, VLCMediaDelega
             p.stop()
             player = nil
         }
+        // Recycled views keep their observers, a background event must not
+        // rebuild or resume a player for media the host already left.
+        source = nil
+        shouldResumePlaying = false
         // Unpin the Control Center / lock-screen controls so a released player
         // can't be driven or shown again, mirroring the official app's
         // `playbackStopped` (which clears now-playing and removes its targets).

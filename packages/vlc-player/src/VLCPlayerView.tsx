@@ -127,11 +127,11 @@ export default forwardRef<VLCPlayerRef, VLCPlayerProps>(function VLCPlayer(props
     },
   }));
 
-  const { source, autoplay, onLoad, onLoadStart, onProgress, onSeek, onPlaying, onPaused, onEnd, onError, onBuffer, onMetadata, onStopped, onSnapshot, onTracks, onRequestNext, onRequestPrevious, ...rest } = props;
+  const { source, autoplay, onLoad, onLoadStart, onProgress, onSeek, onPlaying, onPaused, onEnd, onError, onBuffer, onMetadata, onStopped, onSnapshot, onTracks, onRequestNext, onRequestPrevious, continueAudioInBackground, showNowPlaying, rate, volume, ...rest } = props;
   const nativeSource: VLCPlayerSource = { ...source };
 
-  if (autoplay !== undefined && nativeSource.autoplay === undefined) {
-    nativeSource.autoplay = autoplay;
+  if (nativeSource.autoplay === undefined) {
+    nativeSource.autoplay = autoplay ?? true;
   }
 
   return (
@@ -165,6 +165,12 @@ export default forwardRef<VLCPlayerRef, VLCPlayerProps>(function VLCPlayer(props
       onRequestPrevious={toNativeEvent<VLCRequestNavigationEvent>(onRequestPrevious)}
       nextTrackEnabled={onRequestNext != null}
       previousTrackEnabled={onRequestPrevious != null}
+      // Native codegen defaults for these are false / 0.0, so pass the
+      // documented defaults explicitly.
+      continueAudioInBackground={continueAudioInBackground ?? true}
+      showNowPlaying={showNowPlaying ?? true}
+      rate={rate ?? 1}
+      volume={volume ?? 100}
       {...rest}
     />
   );

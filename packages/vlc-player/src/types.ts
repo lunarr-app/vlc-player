@@ -77,13 +77,14 @@ export type VLCPlayerProps = {
   paused?: boolean;
   muted?: boolean;
   repeat?: boolean;
+  /** Playback speed multiplier. 1 = normal, 0.5 half speed, 2 double. Default 1. */
   rate?: number;
   /**
    * Video framing: `contain` (fit, letterbox), `cover` (zoom, fill/crop),
    * `stretch` (fill, distort), `center` / `none` (original size).
    */
   resizeMode?: VLCResizeMode;
-  /** Volume: 0-200 (100 = normal, >100 boosts up to 2x). */
+  /** Volume: 0-200 (100 = normal, >100 boosts up to 2x). Default 100. */
   volume?: number;
   autoAspectRatio?: boolean;
   videoAspectRatio?: string;

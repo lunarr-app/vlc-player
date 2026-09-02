@@ -77,6 +77,7 @@ class VLCPlayerView(context: ThemedReactContext) :
     private var nowPlayingDiscNumber: Int = 0
     private var nowPlayingArtwork: String? = null
     private var continueAudioInBackground = true
+    private var pausedProp = false
     private var showNowPlaying = true
     private var nowPlayingActive = false
     private var shouldResumePlaying = false
@@ -259,10 +260,10 @@ class VLCPlayerView(context: ThemedReactContext) :
     fun setSource(src: ReadableMap) {
         srcMap = src
         val autoplay = if (src.hasKey("autoplay")) src.getBoolean("autoplay") else true
-        createPlayer(autoplay = autoplay, isResume = false)
+        createPlayer(autoplay = autoplay)
     }
 
-    private fun createPlayer(autoplay: Boolean, isResume: Boolean) {
+    private fun createPlayer(autoplay: Boolean) {
         releasePlayer()
         val surfaceTexture = surfaceTexture ?: return
         val src = srcMap ?: return
@@ -342,11 +343,7 @@ class VLCPlayerView(context: ThemedReactContext) :
             // the official app recomputes the surface geometry on layout.
             applyResizeMode()
 
-            if (isResume) {
-                if (autoplay) {
-                    player.play()
-                }
-            } else if (autoplay) {
+            if (autoplay && !pausedProp) {
                 player.play()
             }
 
@@ -360,6 +357,9 @@ class VLCPlayerView(context: ThemedReactContext) :
         stopProgress()
         abandonAudioFocus()
         stopNowPlaying()
+        // Detached views still receive lifecycle callbacks, drop the resume
+        // flag so onHostResume cannot restart a released player.
+        shouldResumePlaying = false
         val lib = libvlc ?: return
         mediaPlayer?.let {
             it.stop()
@@ -373,18 +373,21 @@ class VLCPlayerView(context: ThemedReactContext) :
     // ---- Public API (called from the manager) ----
 
     fun play() {
+        pausedProp = false
         mediaPlayer?.play()
         requestAudioFocus()
         scheduleProgress()
     }
 
     fun pause() {
+        pausedProp = true
         mediaPlayer?.pause()
         abandonAudioFocus()
         stopProgress()
     }
 
     fun setPaused(paused: Boolean) {
+        pausedProp = paused
         val player = mediaPlayer
         if (player != null) {
             if (paused) {
@@ -394,7 +397,7 @@ class VLCPlayerView(context: ThemedReactContext) :
                 scheduleProgress()
             }
         } else {
-            createPlayer(autoplay = !paused, isResume = false)
+            createPlayer(autoplay = true)
         }
     }
 
@@ -888,7 +891,10 @@ class VLCPlayerView(context: ThemedReactContext) :
             applyResizeMode()
             return
         }
-        createPlayer(autoplay = true, isResume = false)
+        // Rebuild on a re-attached surface, honoring the source's autoplay
+        // and the paused prop.
+        val autoplay = srcMap?.takeIf { it.hasKey("autoplay") }?.getBoolean("autoplay") ?: true
+        createPlayer(autoplay = autoplay)
     }
 
     override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {

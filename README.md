@@ -169,7 +169,8 @@ When provided they're used as the instance's init arguments verbatim (no merging
 - Hide subtitles either for the whole source (`mediaOptions: [':sub-language=none']`,
   see above) or at runtime via `selectSubtitleTrack(-1)`.
 - Load external subtitles with `setSubtitleFile(path)` at any time.
-- `volume` accepts `0` to `200`, where `100` is normal loudness and values above
+- `rate` sets the playback speed multiplier, default `1`.
+- `volume` accepts `0` to `200` (default `100`), where `100` is normal loudness and values above
   `100` boost the audio up to `200` (2x), matching the official apps' audio
   boost. On Android the maximum applies to libvlc's own volume scale. On iOS the
   boost applies to playback gain.

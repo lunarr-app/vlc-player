@@ -238,18 +238,45 @@ using namespace facebook::react;
 - (void)updateProps:(Props::Shared const &)props oldProps:(Props::Shared const &)oldProps
 {
   const auto &newProps = *std::static_pointer_cast<VLCPlayerProps const>(props);
+  // `oldProps` is nil on first mount, fall back to the codegen defaults.
+  static const auto defaultProps = std::make_shared<VLCPlayerProps const>();
+  const auto &old = *std::static_pointer_cast<VLCPlayerProps const>(oldProps ? oldProps : defaultProps);
 
-  [_playerView setPaused:newProps.paused];
-  [_playerView setMuted:newProps.muted];
-  [_playerView setRepeat:newProps.repeat];
-  [_playerView setRate:newProps.rate];
-  [_playerView setVolume:(int)newProps.volume];
-  [_playerView setAutoAspectRatio:newProps.autoAspectRatio];
-  [_playerView setProgressUpdateInterval:newProps.progressUpdateInterval];
-  [_playerView setContinueAudioInBackground:newProps.continueAudioInBackground];
-  [_playerView setShowNowPlaying:newProps.showNowPlaying];
-  [_playerView setNextTrackEnabled:newProps.nextTrackEnabled];
-  [_playerView setPreviousTrackEnabled:newProps.previousTrackEnabled];
+  // Fabric passes the full props struct on every commit, even for unchanged
+  // props. Apply only changes or a paused player would resume on re-renders.
+  if (newProps.paused != old.paused) {
+    [_playerView setPaused:newProps.paused];
+  }
+  if (newProps.muted != old.muted) {
+    [_playerView setMuted:newProps.muted];
+  }
+  if (newProps.repeat != old.repeat) {
+    [_playerView setRepeat:newProps.repeat];
+  }
+  if (newProps.rate != old.rate) {
+    [_playerView setRate:newProps.rate];
+  }
+  if (newProps.volume != old.volume) {
+    [_playerView setVolume:(int)newProps.volume];
+  }
+  if (newProps.autoAspectRatio != old.autoAspectRatio) {
+    [_playerView setAutoAspectRatio:newProps.autoAspectRatio];
+  }
+  if (newProps.progressUpdateInterval != old.progressUpdateInterval) {
+    [_playerView setProgressUpdateInterval:newProps.progressUpdateInterval];
+  }
+  if (newProps.continueAudioInBackground != old.continueAudioInBackground) {
+    [_playerView setContinueAudioInBackground:newProps.continueAudioInBackground];
+  }
+  if (newProps.showNowPlaying != old.showNowPlaying) {
+    [_playerView setShowNowPlaying:newProps.showNowPlaying];
+  }
+  if (newProps.nextTrackEnabled != old.nextTrackEnabled) {
+    [_playerView setNextTrackEnabled:newProps.nextTrackEnabled];
+  }
+  if (newProps.previousTrackEnabled != old.previousTrackEnabled) {
+    [_playerView setPreviousTrackEnabled:newProps.previousTrackEnabled];
+  }
 
   const auto &meta = newProps.nowPlayingMetadata;
   NSMutableDictionary *md = [NSMutableDictionary dictionary];
